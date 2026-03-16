@@ -45,34 +45,6 @@ This project is being built to demonstrate:
 
 ---
 
-## Current Repository Status
-
-### Already in the repo
-- [x] Project direction selected
-- [x] Repository structure created
-- [x] Project summary written
-- [x] Architecture decisions baseline written
-- [x] System architecture document written
-- [x] Roadmap created
-- [x] Risk register created
-- [x] Build log created
-- [x] Validation test plan created
-- [x] Initial project hero image added
-
-### Not yet committed to the repo
-- [ ] Requirements / specification document
-- [ ] Schematic files
-- [ ] PCB layout files
-- [ ] Manufacturing outputs
-- [ ] Hardware assembly evidence
-- [ ] Firmware source tree
-- [ ] First power-on results
-- [ ] First full-cube functional demo
-- [ ] Measured validation results
-- [ ] Final release package
-
----
-
 ## Repository Structure
 
 ```text
