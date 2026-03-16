@@ -7,12 +7,12 @@ This roadmap shows the planned execution path for the 8×8×8 LED Cube project f
 
 | Phase | Status | Main Goal | Key Outputs |
 |---|---|---|---|
-| 1. Project Definition | Done | Define scope, goals, and documentation structure | Project summary, requirements, repository structure |
-| 2. System Architecture | Done | Define system-level design and major technical decisions | Architecture document, block diagrams, interface definitions |
-| 3. Hardware Design | Done | Design the LED cube electronics and PCB | Schematic, PCB layout, manufacturing files |
-| 4. Hardware Assembly | In Progress / Done after physical build confirmation | Assemble PCB and cube hardware safely and correctly | Soldered PCB, cube structure, bring-up notes |
-| 5. Firmware Foundation | In Progress | Establish low-level firmware needed to operate the cube | GPIO mapping, scan engine, timing control, test code |
-| 6. Functional Bring-Up | Planned / In Progress | Prove the cube can display stable patterns and basic animations | Layer test, LED test, first animation demo |
+| 1. Project Definition | In Progress | Define scope, goals, and documentation structure | Project summary, requirements, repository structure |
+| 2. System Architecture | In Progress | Define system-level design and major technical decisions | Architecture document, block diagrams, interface definitions |
+| 3. Hardware Design | Planned | Design the LED cube electronics and PCB | Schematic, PCB layout, manufacturing files |
+| 4. Hardware Assembly | Planned | Assemble PCB and cube hardware safely and correctly | Soldered PCB, cube structure, bring-up notes |
+| 5. Firmware Foundation | Planned | Establish low-level firmware needed to operate the cube | GPIO mapping, scan engine, timing control, test code |
+| 6. Functional Bring-Up | Planned | Prove the cube can display stable patterns and basic animations | Layer test, LED test, first animation demo |
 | 7. Control and Effects | Planned | Add higher-level animation and control features | Animation engine, presets, control interface |
 | 8. Validation and Debugging | Planned | Verify performance, stability, power behavior, and correctness | Test results, issue logs, fixes, validation notes |
 | 9. Portfolio Packaging | Planned | Present the project professionally for GitHub and recruiters | Final README updates, media, final report, release package |
