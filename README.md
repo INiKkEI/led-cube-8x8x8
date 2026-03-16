@@ -2,12 +2,7 @@
 
 Portfolio-grade embedded systems project: a fully documented 8×8×8 LED cube built around a custom single-board hardware design, ESP32-based control, and structured engineering documentation from requirements to validation.
 
-> Goal: create a technically strong, recruiter-friendly project that demonstrates PCB design, embedded firmware, debugging, testing, and clear engineering documentation.
-
 ![Project hero image](media/hero/led-cube-hero.png)
-
-> Replace the image above later with a PCB render, CAD render, or prototype photo.  
-> If you do not have one yet, keep the line and add the file later, or temporarily comment it out.
 
 ---
 
