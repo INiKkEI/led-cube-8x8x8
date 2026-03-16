@@ -1,0 +1,1 @@
+This folder contains project visuals such as CAD renders, PCB renders, prototype photos, diagrams, and demo videos.

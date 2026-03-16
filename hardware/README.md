@@ -1,0 +1,1 @@
+This folder contains hardware design files and outputs: schematics, PCB files, component selection notes, BOMs, renders, and manufacturing exports.

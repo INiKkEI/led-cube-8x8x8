@@ -1,0 +1,1 @@
+This folder contains the ESP32 firmware for the LED cube project, including source code, support modules, and test code.

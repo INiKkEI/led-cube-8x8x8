@@ -1,0 +1,1 @@
+This folder contains the engineering documentation for the LED cube project: requirements, architecture, planning, calculations validation, and portfolio notes.
