@@ -6,22 +6,6 @@ This file records only work that has actually been done. It is not a roadmap, mi
 
 ---
 
-## Logging Rules
-
-1. Log only completed work sessions.
-2. Do not add placeholder, estimated, or future-dated entries.
-3. Add newest sessions at the top.
-4. Keep each entry factual:
-   - what was done
-   - what was observed
-   - what problems were found
-   - which files or commits changed
-5. If no measurements were taken, write `None recorded`.
-6. If no problems were found, write `None recorded`.
-7. Planned work belongs in issues, milestones, or roadmap documents, not here.
-
----
-
 ## Session History
 
 ### 2026-03-16 — Build log cleanup and conversion to factual history
