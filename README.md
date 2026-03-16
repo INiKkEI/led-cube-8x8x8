@@ -58,7 +58,6 @@ docs/
 ├── 02_hardware/              BOM and hardware-related documentation
 └── 04_validation/            Test plan and future validation results
 
-<<<<<<< HEAD
 hardware/                     Hardware design workspace and outputs
 firmware/                     ESP32 firmware workspace
 media/                        Images, diagrams, photos, and demo media
@@ -71,4 +70,3 @@ firmware/                     ESP32 source code and project files
 media/                        Images, diagrams, photos, demo media
 CHANGELOG.md                  Milestone-level repository changes
 README.md                     Public project overview
->>>>>>> 913db8602bd2ac8be2985682f5a1ed047cf3e53d
