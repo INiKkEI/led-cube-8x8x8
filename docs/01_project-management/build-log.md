@@ -46,16 +46,6 @@ For each meaningful work session, recorded:
 
 ---
 
-## Issue Tracking Section
-
-Use this section for short problem records that may span multiple sessions.
-
-| ID | Issue | First seen | Status | Fix / notes |
-|---|---|---|---|---|
-| BL-001 | Example: exapmple issue | TBD | Open | Suggestion what to do |
-
----
-
 ## Session Entry Template
 
 
