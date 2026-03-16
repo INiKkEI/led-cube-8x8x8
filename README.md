@@ -60,22 +60,3 @@ firmware/                     ESP32 source code and project files
 media/                        Images, diagrams, photos, demo media
 CHANGELOG.md                  Milestone-level repository changes
 README.md                     Public project overview
-```
-
-## Current Focus
-
-The immediate focus is to turn the documentation baseline into committed implementation work:
-
-- add the requirements/specification document
-- start the real hardware design files
-- start the real firmware source tree
-- replace placeholder progress claims with measured evidence as work is completed
-
-## Documentation Policy
-
-This repository is intended to track the project directly in Git:
-
-- build-log.md records work sessions and problems found
-- roadmap.md tracks phase-level progress
-- risks.md tracks active project risks
-- CHANGELOG.md records milestone-level changes
