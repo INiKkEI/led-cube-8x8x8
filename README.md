@@ -8,9 +8,12 @@ Portfolio-focused embedded systems project for designing and documenting a custo
 
 ## Project Overview
 
-This repository is intended to become a complete engineering case study, not just a visual LED demo. The goal is to document the full path from concept and architecture decisions to hardware design, firmware bring-up, validation, and final presentation.
+This project is an **8×8×8 monochrome LED cube** being developed as a public engineering portfolio project.
+
+The goal is not only to build the cube itself, but also to document the development process clearly: project planning, system architecture, hardware decisions, firmware development, bring-up, and validation.
 
 Current project direction:
+
 - **Cube size:** 8×8×8
 - **Display type:** monochrome LED cube
 - **Controller:** ESP32
@@ -22,7 +25,8 @@ Current project direction:
 
 ## Why this project exists
 
-This project is being built to demonstrate:
+This repository is intended to show more than a simple LED demo. It is being built to demonstrate:
+
 - system-level design thinking
 - custom PCB development
 - embedded firmware structure
@@ -45,65 +49,18 @@ This project is being built to demonstrate:
 
 ---
 
-## Current Repository Status
-
-### Already in the repo
-- [x] Project direction selected
-- [x] Repository structure created
-- [x] Project summary written
-- [x] Architecture decisions baseline written
-- [x] System architecture document written
-- [x] Roadmap created
-- [x] Risk register created
-- [x] Build log created
-- [x] Validation test plan created
-- [x] Initial project hero image added
-
-### Not yet committed to the repo
-- [ ] Requirements / specification document
-- [ ] Schematic files
-- [ ] PCB layout files
-- [ ] Manufacturing outputs
-- [ ] Hardware assembly evidence
-- [ ] Firmware source tree
-- [ ] First power-on results
-- [ ] First full-cube functional demo
-- [ ] Measured validation results
-- [ ] Final release package
-
----
-
 ## Repository Structure
 
 ```text
 docs/
-├── 00_overview/              Project summary, architecture, decisions
-├── 01_project-management/    Roadmap, risks, build log
-├── 02_hardware/              Hardware documentation
-├── 03_firmware/              Firmware documentation
-└── 04_validation/            Test planning and future results
+├── 00_overview/              Project summary and system architecture
+├── 01_project-management/    Roadmap and planning documents
+├── 02_hardware/              BOM and hardware-related documentation
+└── 04_validation/            Test plan and future validation results
 
-hardware/                     CAD files, schematics, PCB outputs
-firmware/                     ESP32 source code and project files
-media/                        Images, diagrams, photos, demo media
-CHANGELOG.md                  Milestone-level repository changes
+hardware/                     Hardware design workspace and outputs
+firmware/                     ESP32 firmware workspace
+media/                        Images, diagrams, photos, and demo media
+
+CHANGELOG.md                  Repository-level change history
 README.md                     Public project overview
-```
-
-## Current Focus
-
-The immediate focus is to turn the documentation baseline into committed implementation work:
-
-- add the requirements/specification document
-- start the real hardware design files
-- start the real firmware source tree
-- replace placeholder progress claims with measured evidence as work is completed
-
-## Documentation Policy
-
-This repository is intended to track the project directly in Git:
-
-- build-log.md records work sessions and problems found
-- roadmap.md tracks phase-level progress
-- risks.md tracks active project risks
-- CHANGELOG.md records milestone-level changes
