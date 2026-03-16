@@ -1,72 +1,50 @@
 # Build Log
 
-> Working engineering log for the **8×8×8 LED Cube** project.  
-> This file records hardware build progress, bring-up results, firmware milestones, issues, fixes, and next actions.
+Working engineering log for the **8×8×8 LED Cube** project.
 
----
-
-## Purpose
-
-This log exists to make the project transparent and portfolio-ready. It should show not only the final result, but also:
-
-- what was built in each session
-- what failed or needed rework
-- what was measured or observed
-- what decisions were made during bring-up
-- what the next step is
-
-For consistency, new entries are added at the **top** of the log.
+This file records only work that has actually been done. It is not a roadmap, milestone list, or task tracker.
 
 ---
 
 ## Logging Rules
 
-For each meaningful work session, recorded:
-
-- **Date**
-- **Session goal**
-- **Work completed**
-- **Problems found**
-- **Measurements / observations**
-- **Files or commits updated**
-- **Next step**
+1. Log only completed work sessions.
+2. Do not add placeholder, estimated, or future-dated entries.
+3. Add newest sessions at the top.
+4. Keep each entry factual:
+   - what was done
+   - what was observed
+   - what problems were found
+   - which files or commits changed
+5. If no measurements were taken, write `None recorded`.
+6. If no problems were found, write `None recorded`.
+7. Planned work belongs in issues, milestones, or roadmap documents, not here.
 
 ---
 
-## Project Baseline
+## Session History
 
-| Item | Current direction |
-|---|---|
-| Project | 8×8×8 LED Cube |
-| Main controller | ESP32 |
-| Hardware approach | Custom single-board control PCB |
-| Display size | 512 LEDs total |
-| Documentation goal | Portfolio-grade, fully documented engineering project |
-| Main focus | Hardware design, firmware bring-up, validation, and transparent process logging |
+### 2026-03-16 — Build log cleanup and conversion to factual history
+
+- **Session goal:** Convert `build-log.md` from a template/task-tracker style document into a factual engineering session log.
+- **Work completed:** Build log file was added, then placeholder `[TBD]` milestone-style entries were removed. The example issue-tracking section was also removed so the file only supports real session logging.
+- **Problems found:** The earlier version mixed future/projected milestones with actual history, which made the file read like a tracker instead of an engineering log.
+- **Measurements / observations:** No hardware or firmware measurements recorded in this session. This was a documentation cleanup session.
+- **Files or commits updated:** `docs/01_project-management/build-log.md` (`46267f0`, `c01a1e8`, `e51636d`).
+- **Next step:** Add a new entry only after a real hardware, firmware, bring-up, or validation session is completed.
 
 ---
 
 ## Session Entry Template
 
+Copy this block for the next real session and place it above older entries.
 
 ```md
-### [YYYY-MM-DD] Session title
-- **Session goal:**
-- **Work completed:**
-- **Problems found:**
-- **Measurements / observations:**
-- **Files or commits updated:**
-- **Next step:**
-```
+### YYYY-MM-DD — Short session title
 
----
-
-## Usage
-
-A workflow is:
-
-1. Work on the hardware or firmware.
-2. Take at least one photo or screenshot.
-3. Add one short log entry immediately after the session.
-4. If something fails, record the failure before fixing it.
-5. Link the entry to a commit, photo, or validation result when possible.
+- **Session goal:** 
+- **Work completed:** 
+- **Problems found:** 
+- **Measurements / observations:** 
+- **Files or commits updated:** 
+- **Next step:** 
