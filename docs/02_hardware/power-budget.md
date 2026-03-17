@@ -92,15 +92,15 @@ Worst case for the active layer:
 - 64 LEDs on at once
 - 10 mA peak per LED
 
-\[
+$$
 I_{display,max} = 64 \times 10\,mA = 640\,mA = 0.64\,A
-\]
+$$
 
 ## 5.2 Display power from 5 V rail
 
-\[
+$$
 P_{display,max} = 5\,V \times 0.64\,A = 3.2\,W
-\]
+$$
 
 So the display section alone is expected to draw about:
 
@@ -118,9 +118,9 @@ Conservative early budget:
 
 ## 5.4 Total estimated input current
 
-\[
+$$
 I_{total,est} = 0.64\,A + 0.25\,A + 0.05\,A = 0.94\,A
-\]
+$$
 
 Rounded engineering estimate:
 
@@ -129,9 +129,9 @@ Rounded engineering estimate:
 
 ## 5.5 Total estimated input power
 
-\[
+$$
 P_{total,est} = 5\,V \times 0.94\,A = 4.7\,W
-\]
+$$
 
 Rounded:
 
