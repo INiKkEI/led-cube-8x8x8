@@ -1,78 +1,95 @@
 # 8×8×8 LED Cube with Custom ESP32 Control PCB
 
-Portfolio-focused embedded systems project for designing and documenting a custom **8×8×8 LED cube (512 LEDs)** with an **ESP32-based control board**, structured firmware, and transparent engineering documentation.
+Portfolio-focused embedded-systems project for designing, building, and documenting a custom **8×8×8 monochrome LED cube** driven by an **ESP32-based control PCB**.
 
 ![Project hero image](media/hero/led-cube-hero.png)
 
----
-
 ## Project Overview
 
-This project is an **8×8×8 monochrome LED cube** being developed as a public engineering portfolio project.
+This repository documents a complete revision-1 build of an **8×8×8 LED cube (512 LEDs)**. The goal is not only to produce a working display, but also to show a clear engineering process: requirements, architecture, hardware design, firmware structure, bring-up, validation, and final presentation.
 
-The goal is not only to build the cube itself, but also to document the development process clearly: project planning, system architecture, hardware decisions, firmware development, bring-up, and validation.
+## Revision 1 Baseline
 
-Current project direction:
+Revision 1 is based on these locked decisions:
 
-- **Cube size:** 8×8×8
-- **Display type:** monochrome LED cube
-- **Controller:** ESP32
-- **Hardware approach:** custom single-board control PCB
-- **Control approach:** BLE to smartphone
-- **Main goal:** strong public portfolio project with transparent documentation
+- **Display:** monochrome 8×8×8 LED cube
+- **Controller:** ESP32 on one custom main PCB
+- **Drive method:** dedicated driver stage with multiplexed layer scanning
+- **User control:** BLE from a smartphone
+- **Storage:** ESP32 internal flash only
+- **Power:** 5 V external input with local 3.3 V regulation
+- **Power target:** baseline adapter target **5 V / 3 A**
+- **Main goal:** portfolio-grade build with transparent documentation
 
----
+The full baseline is defined in:
+
+- `docs/00_overview/architecture-decisions.md`
+- `docs/00_overview/requirements-specification.md`
+- `docs/00_overview/system-architecture.md`
 
 ## Why this project exists
 
-This repository is intended to show more than a simple LED demo. It is being built to demonstrate:
+This repository is intended to demonstrate more than a simple LED effect demo. It is structured to show:
 
-- system-level design thinking
+- system-level design
 - custom PCB development
-- embedded firmware structure
-- hardware/software integration
-- bring-up and debugging workflow
-- verification and documentation discipline
-
----
-
-## Revision 1 must include
-
-1. A functional **8×8×8 monochrome LED cube** with **512 LEDs**.
-2. **One custom ESP32-based control PCB** as the main hardware platform.
-3. A **dedicated driver stage** between the ESP32 and the cube for LED line driving and layer switching.
-4. A **multiplexed display architecture** with **one active layer at a time**.
-5. **5 V external power input** with local **3.3 V regulation** for the ESP32 and logic.
-6. Firmware that provides:
-   - hardware initialization
-   - continuous refresh / scan control
-   - display mapping
-   - a basic built-in animation set
-   - animation storage in **ESP32 internal flash only**
-   - **BLE-based smartphone control** for basic user commands
-   - diagnostic / test-pattern modes for bring-up
-7. A **programming/debug interface** for firmware upload and development diagnostics.
-8. Basic validation evidence showing:
-   - successful power-up
-   - layer and line test operation
-   - correct LED mapping
-   - stable refresh behavior
-   - successful BLE control of the cube
-
----
+- embedded firmware organization
+- hardware/firmware integration
+- bring-up and debugging discipline
+- traceable verification
+- professional project documentation
 
 ## Repository Structure
 
 ```text
 docs/
-├── 00_overview/              Project summary and system architecture
-├── 01_project-management/    Roadmap and planning documents
-├── 02_hardware/              BOM and hardware-related documentation
-└── 04_validation/            Test plan and future validation results
+├── README.md
+├── 00_overview/
+│   ├── architecture-decisions.md
+│   ├── hardware-firmware-boundary.md
+│   ├── project-summary.md
+│   ├── requirements-specification.md
+│   └── system-architecture.md
+├── 01_project-management/
+│   ├── build-log.md
+│   └── risks.md
+├── 02_hardware/
+│   ├── assembly-strategy.md
+│   ├── bom.md
+│   ├── design-calculations.md
+│   ├── driver-topology.md
+│   └── power-budget.md
+├── 03_firmware/
+│   ├── animation-engine.md
+│   ├── ble-protocol.md
+│   ├── firmware-architecture.md
+│   └── state-machine.md
+├── 04_validation/
+│   ├── bring-up-checklist.md
+│   └── test-plan.md
+└── 05_portfolio/
+    ├── final-story.md
+    ├── lessons-learned.md
+    └── recruiter-summary.md
 
-hardware/                     Hardware design workspace and outputs
-firmware/                     ESP32 firmware workspace
-media/                        Images, diagrams, photos, and demo media
+hardware/     Hardware design workspace and outputs
+firmware/     Firmware project workspace
+media/        Images, diagrams, photos, and demo media
 
-CHANGELOG.md                  Repository-level change history
-README.md                     Public project overview
+CHANGELOG.md  Repository-level milestone history
+README.md     Public landing page
+```
+
+## Documentation Map
+
+Use the repository in this order:
+
+1. `docs/00_overview/architecture-decisions.md` for the locked technical baseline
+2. `docs/00_overview/requirements-specification.md` for what revision 1 must satisfy
+3. `docs/00_overview/system-architecture.md` for subsystem structure and interfaces
+4. `docs/04_validation/test-plan.md` for how the requirements will be verified
+5. topic-specific hardware, firmware, and portfolio folders for detailed follow-on work
+
+## Status
+
+The repository currently focuses on locking the revision-1 definition and preparing the design, implementation, and validation structure. Hardware implementation, firmware implementation, and final evidence collection will be added as the project progresses.
