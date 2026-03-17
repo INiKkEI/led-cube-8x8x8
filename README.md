@@ -76,9 +76,3 @@ media/                        Images, diagrams, photos, and demo media
 
 CHANGELOG.md                  Repository-level change history
 README.md                     Public project overview
-=======
-hardware/                     CAD files, schematics, PCB outputs
-firmware/                     ESP32 source code and project files
-media/                        Images, diagrams, photos, demo media
-CHANGELOG.md                  Milestone-level repository changes
-README.md                     Public project overview
