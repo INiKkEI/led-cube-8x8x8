@@ -224,25 +224,7 @@ The project should remain realistic as a student build while still being strong 
 
 ---
 
-## 4. Explicitly out of scope for revision 1
-
-The following are not part of revision 1 unless this document is revised:
-
-- RGB LEDs
-- external animation memory
-- Wi-Fi/cloud control
-- battery operation
-- audio-reactive features
-- microphone input
-- modular multi-PCB architecture as the baseline design
-- USB as the main user control interface
-- a full custom mobile app as a required deliverable
-
-These are possible future extensions, not revision 1 requirements.
-
----
-
-## 5. Implementation rules derived from the architecture
+## 4. Implementation rules derived from the architecture
 
 The following are now fixed assumptions for implementation:
 
@@ -254,7 +236,7 @@ The following are now fixed assumptions for implementation:
 
 ---
 
-## 6. What is still flexible
+## 5. What is still flexible
 
 The following are still implementation-level choices and do not require a top-level architecture revision by themselves:
 
@@ -271,7 +253,7 @@ These may be optimized during implementation as long as they remain inside the l
 
 ---
 
-## 7. Revision 1 Scope
+## 6. Revision 1 Scope
 
 ### Purpose
 Revision 1 is the minimum complete build of the project. Its purpose is to deliver a working, documented, and verifiable 8×8×8 LED cube without adding non-essential features that increase hardware, firmware, or integration risk.
