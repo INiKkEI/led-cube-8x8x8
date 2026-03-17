@@ -164,13 +164,3 @@ Revision 1 shall be considered functionally complete when all of the following a
 4. Diagnostic patterns confirm basic cube mapping and layer operation.
 5. The system runs from a 5 V external supply with local 3.3 V regulation.
 6. No out-of-scope features are required to demonstrate a complete revision 1 build.
-
-## 9. Recommended Repository Location
-
-Recommended file path in the repository:
-
-```text
-docs/00_overview/requirements-specification.md
-```
-
-This keeps the requirements document close to the existing overview and architecture baseline documents.
