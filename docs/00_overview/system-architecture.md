@@ -2,404 +2,384 @@
 
 ## 1. Purpose
 
-This document defines the high-level system architecture of the 8×8×8 LED Cube project. It explains how the main subsystems interact, what responsibilities each subsystem has, and which design decisions shape the overall solution.
+This document defines the high-level system architecture of the 8×8×8 LED Cube project.
 
-The document is intended to support:
-
-- project documentation in the repository
-- hardware and firmware implementation work
-- later verification and validation activities
-- portfolio presentation of the project as a complete embedded system
+It identifies the major subsystems, the interfaces between them, and the main responsibilities assigned to each subsystem. The document is intended to guide hardware design, firmware structure, bring-up, and later verification.
 
 ---
 
-## 2. System Overview
+## 2. Architecture Baseline
 
-The project is a custom-built 8×8×8 LED cube containing 512 LEDs. The cube is controlled by an ESP32-based custom main PCB that manages LED scanning, animation generation, power distribution, and external control.
+This architecture follows the locked project decisions:
 
-The system is designed as a complete embedded product rather than only a visual demo. This means the architecture must support not only light output, but also maintainability, documentation, validation, and clear hardware/firmware separation.
+- **Main controller:** ESP32 module on the custom PCB
+- **Primary user control:** smartphone over BLE
+- **Display type:** monochrome 8×8×8 LED cube
+- **Animation storage:** ESP32 internal flash only
+- **Main power input:** 5 V DC
+- **Logic rail:** local 3.3 V regulation for ESP32 logic
+- **Power target:** external adapter sized for the cube and driver load
+- **Hardware platform:** one main custom PCB
+- **Display method:** multiplexed scanning through a dedicated driver stage
 
-At system level, the LED cube can be viewed as four cooperating layers:
-
-1. **User interaction layer** — external control and configuration input
-2. **Control and processing layer** — ESP32 firmware, timing, animation logic, and state handling
-3. **LED drive layer** — electrical interface between controller logic and the 8×8×8 LED structure
-4. **Power layer** — stable supply and current delivery for logic and LEDs
-
----
-
-## 3. Architectural Drivers
-
-The architecture is driven by the following project goals and constraints:
-
-### 3.1 Functional drivers
-
-- Control a full **8×8×8 LED cube (512 LEDs)**
-- Generate 3D visual effects and animations
-- Refresh the display fast enough to avoid visible flicker
-- Support structured firmware rather than a single monolithic loop
-- Allow future external control features through the ESP32 platform
-
-### 3.2 Non-functional drivers
-
-- Use a **custom single-board hardware design**
-- Keep the design portfolio-friendly and well documented
-- Separate hardware-specific code from animation/application logic
-- Make the architecture testable during bring-up and validation
-- Keep the design maintainable for future revisions
-
-### 3.3 Engineering constraints
-
-- The cube cannot drive all LEDs continuously at full static current; it must use a multiplexed scanning architecture
-- LED current switching and logic control must be electrically separated from high-level animation logic
-- The power subsystem must handle dynamic load changes caused by scanning and animation patterns
-- The PCB should simplify wiring and integration compared to a breadboard or multi-board prototype
+These points are architectural constraints for revision 1.
 
 ---
 
-## 4. Top-Level Architecture
+## 3. System Overview
 
-```text
-+-----------------------+
-| External User / Tool  |
-| - demo control        |
-| - config / commands   |
-+-----------+-----------+
-            |
-            v
-+-----------------------+
-| ESP32 Control Layer   |
-| - system state        |
-| - animation engine    |
-| - frame generation    |
-| - timing control      |
-| - communication       |
-+-----------+-----------+
-            |
-            v
-+-----------------------+
-| LED Driver Layer      |
-| - row/column control  |
-| - layer selection     |
-| - current switching   |
-+-----------+-----------+
-            |
-            v
-+-----------------------+
-| 8x8x8 LED Cube        |
-| - 512 LEDs            |
-| - multiplexed display |
-+-----------------------+
+The project is a single-board embedded system that receives external 5 V power, accepts user commands over BLE, generates animation data in firmware, converts that data into scan timing and drive patterns, and displays the result on a monochrome 8×8×8 LED cube.
 
-+-----------------------+
-| Power Subsystem       |
-| - DC input            |
-| - regulation/filter   |
-| - logic + LED rails   |
-+-----------------------+
+At top level, the system is divided into five main subsystems:
+
+1. **Power subsystem**
+2. **ESP32 control subsystem**
+3. **LED driver subsystem**
+4. **8×8×8 LED cube subsystem**
+5. **BLE user interface subsystem**
+
+A separate **programming/debug interface** is included for firmware upload and development access, but it is not the primary end-user interface.
+
+---
+
+## 4. Top-Level Architecture Diagram
+
+```mermaid
+flowchart TD
+    USER[Smartphone / BLE<br/>mode selection and configuration]
+    VIN[External 5 V DC Input<br/>adapter / PSU]
+    PWR[Power Subsystem<br/>5 V distribution<br/>3.3 V regulation<br/>filtering and decoupling]
+    MCU[ESP32 Control Subsystem<br/>system state<br/>animation engine<br/>BLE handling<br/>scan engine<br/>internal flash animation storage]
+    DBG[Programming / Debug Interface<br/>USB / UART<br/>development only]
+    DRV[LED Driver Subsystem<br/>row / column drive<br/>layer switching<br/>current handling]
+    CUBE[8×8×8 Monochrome LED Cube<br/>512 LEDs<br/>multiplexed visual output]
+
+    VIN -->|5 V input| PWR
+    PWR -->|3.3 V logic rail| MCU
+    PWR -->|5 V display power| DRV
+
+    USER -->|BLE commands and settings| MCU
+    DBG -->|firmware upload and serial debug| MCU
+
+    MCU -->|scan data<br/>layer select<br/>latch / blanking / enable timing| DRV
+    DRV -->|multiplexed LED drive signals and current paths| CUBE
 ```
 
-The ESP32 is the architectural center of the system. It does not directly represent the visual content one LED at a time from user logic. Instead, it manages a display model, converts it into scan data, and repeatedly updates the hardware driver stage.
+**Figure — High-level system architecture.** The power subsystem receives external 5 V input and provides separate logic and display power paths. The ESP32 is the central control block and handles BLE communication, animation logic, and scan generation. The LED driver subsystem converts ESP32 control signals into multiplexed drive signals for the monochrome 8×8×8 LED cube. Programming/debug access is a development-only interface to the ESP32.
 
 ---
 
-## 5. Hardware Architecture
+## 5. Major Subsystems and Responsibilities
 
-## 5.1 Main hardware blocks
+### 5.1 Power Subsystem
 
-The hardware architecture is divided into the following major blocks:
+The power subsystem is responsible for electrical supply handling and rail distribution.
 
-### A. DC power input and conditioning
-Responsible for accepting the system power input and distributing it safely to logic and LED-driving circuitry.
+**Responsibilities**
+- receive the external 5 V DC input
+- distribute 5 V power to the LED driver stage
+- generate or provide the regulated 3.3 V logic rail for the ESP32
+- provide local decoupling and bulk capacitance
+- limit the effect of display-current transients on logic stability
+- support PCB-level separation of noisy display-current paths and sensitive logic paths
 
-Main responsibilities:
+**Boundary**
+The power subsystem owns supply quality and distribution. It does not own control logic, animation logic, or communication.
 
-- receive the external supply
-- provide stable voltage rails
-- reduce supply noise and transient disturbance
-- support peak current demands during LED scanning
+### 5.2 ESP32 Control Subsystem
 
-### B. ESP32 control subsystem
-This subsystem contains the main microcontroller and its support circuitry.
+The ESP32 control subsystem is the central logic and coordination block.
 
-Main responsibilities:
+**Responsibilities**
+- run the main firmware
+- maintain system state and operating mode
+- store animations in internal flash memory
+- manage the logical cube image or voxel model
+- generate scan timing and output patterns
+- control brightness through firmware timing strategy
+- manage BLE communication
+- expose development-time programming and debug access
+- coordinate the LED driver stage
 
-- run firmware and animation logic
-- generate timing and scan-control signals
-- manage communication and configuration interfaces
-- coordinate the full cube refresh cycle
+**Suggested internal firmware layers**
+- hardware abstraction / low-level I/O
+- scan engine
+- display mapping layer
+- animation engine
+- BLE command handling
+- diagnostics and test patterns
 
-Typical support functions include:
+**Boundary**
+The ESP32 owns system logic, timing, communication, and animation behavior. It must not directly carry the high LED switching current required by the cube.
 
-- power regulation/decoupling for the controller
-- boot and programming access
-- reset and debug access
+### 5.3 LED Driver Subsystem
 
-### C. LED driver subsystem
-This subsystem forms the electrical bridge between the ESP32 and the LED cube.
+The LED driver subsystem is the electrical interface between the ESP32 and the LED cube.
 
-Main responsibilities:
+**Responsibilities**
+- receive logic-level control signals from the ESP32
+- switch the active layer in the multiplexing sequence
+- drive row/column line states for the active layer
+- handle LED current switching outside the ESP32 GPIO pins
+- support clean latching, blanking, and enable timing during refresh
+- isolate the controller from direct high-current LED loading
 
-- translate controller signals into drive signals suitable for the cube
-- switch active layers/planes in the multiplexing sequence
-- control LED line states for the currently active slice
-- protect the controller from direct high-current LED switching loads
+**Boundary**
+The LED driver subsystem owns electrical switching and current handling. It does not decide which animation to show.
 
-At architecture level, this block is treated as a dedicated driver stage, regardless of the final exact implementation details at component level.
+### 5.4 LED Cube Subsystem
 
-### D. LED cube load
-The 8×8×8 cube is the visual output device.
+The LED cube subsystem is the physical 8×8×8 monochrome LED structure.
 
-Main responsibilities:
+**Responsibilities**
+- act as the final visual output of the system
+- convert multiplexed electrical drive into a visible 3D image
+- display one active layer at a time
+- rely on persistence of vision for a stable full-frame image
 
-- convert time-multiplexed electrical drive into a 3D visual image
-- display one active layer at a time while relying on persistence of vision
-- reflect the frame data produced by the firmware
+**Boundary**
+The cube is treated as the passive visual load in the system architecture. It does not contain control logic.
 
----
+### 5.5 BLE User Interface Subsystem
 
-## 5.2 Hardware interaction model
+The BLE user interface subsystem is the primary end-user control path for revision 1.
 
-The hardware operates in a scan-based manner:
+**Responsibilities**
+- provide wireless control from a smartphone
+- carry mode selection commands
+- carry animation selection commands
+- carry parameter changes such as brightness or speed, if implemented
+- keep user control separate from the time-critical scan path
 
-1. The ESP32 prepares output data for one cube layer.
-2. The LED driver subsystem applies the correct line states.
-3. One layer is enabled for a short time window.
-4. The layer is disabled.
-5. The process repeats for the next layer.
-6. A full frame is produced after all layers are refreshed.
+**Boundary**
+BLE provides command and configuration input only. It does not directly drive the LEDs or control scan timing.
 
-This approach reduces the number of simultaneously driven LEDs and makes a 512-LED cube practical with a compact embedded controller.
+### 5.6 Programming / Debug Interface
 
----
+This development-only interface supports implementation and bring-up.
 
-## 5.3 Power architecture view
+**Responsibilities**
+- firmware upload
+- serial logging or diagnostics
+- development-time testing and troubleshooting
+- maintenance and recovery access
 
-The power architecture should be considered as two logical domains:
-
-- **logic domain** — ESP32 and low-power support circuitry
-- **display power domain** — LED drive path and switching currents
-
-Even if both domains come from the same external source, the architecture should treat them separately in layout and filtering because their electrical behavior is different.
-
-Key design considerations:
-
-- local decoupling near controller and driver devices
-- bulk capacitance near dynamic LED load sections
-- short high-current return paths
-- controlled grounding strategy to reduce visible display artifacts and controller instability
-
----
-
-## 6. Firmware Architecture
-
-The firmware should be structured in layers rather than written as one large application file. A layered firmware architecture improves testing, portability, and readability.
-
-## 6.1 Firmware layers
-
-### A. Hardware abstraction layer (HAL)
-Lowest firmware layer responsible for direct peripheral access.
-
-Main responsibilities:
-
-- configure GPIO and timing resources
-- control scan outputs
-- provide low-level driver interfaces
-- isolate hardware-specific details from upper layers
-
-### B. Display engine
-Responsible for converting logical cube state into scan-ready output.
-
-Main responsibilities:
-
-- maintain cube frame representation
-- map voxel data to physical output order
-- sequence layers for multiplexed refresh
-- manage brightness timing if brightness control is implemented
-
-### C. Animation engine
-Responsible for visual behavior at application level.
-
-Main responsibilities:
-
-- generate animation patterns and transitions
-- update the cube model over time
-- manage effect parameters, speed, and mode changes
-
-### D. Communication / control interface
-Responsible for receiving external commands or future expansion inputs.
-
-Main responsibilities:
-
-- parse control messages or settings
-- expose mode selection or configuration hooks
-- separate external control from display timing logic
-
-### E. Diagnostics and system services
-Responsible for internal monitoring and maintainability features.
-
-Main responsibilities:
-
-- startup self-checks
-- test patterns for bring-up
-- error handling or safe fallback states
-- development diagnostics for hardware verification
+**Boundary**
+This interface is not the primary user interface in revision 1.
 
 ---
 
-## 6.2 Suggested runtime behavior
+## 6. Interface Definitions
 
-A practical runtime model is:
+### IF-01 External Power Interface
+**From:** external adapter / PSU  
+**To:** power subsystem
 
-- **fast periodic task / interrupt context** for scan refresh
-- **main control loop** for animation updates and communication handling
-- **diagnostic/test mode** for bring-up and validation
+**Purpose**
+Provide the main electrical input for the complete system.
 
-This separation is important because display refresh timing is time-critical, while animation selection and user interaction are not.
+**Carries**
+- 5 V power
+- ground / return
 
----
+### IF-02 Logic Power Interface
+**From:** power subsystem  
+**To:** ESP32 control subsystem
 
-## 7. Data Flow and Control Flow
+**Purpose**
+Provide stable logic power for the controller and support circuitry.
 
-## 7.1 Display data path
+**Carries**
+- 3.3 V logic rail
+- ground
 
-The logical display path is:
+### IF-03 Display Power Interface
+**From:** power subsystem  
+**To:** LED driver subsystem
 
-```text
-Animation parameters / commands
-            ->
-Application state
-            ->
-3D frame buffer / voxel model
-            ->
-Layer extraction
-            ->
-Driver output pattern
-            ->
-Active LED layer
-            ->
-Visible cube image
-```
+**Purpose**
+Provide the power used by the LED switching and display-current path.
 
-## 7.2 Control flow summary
+**Carries**
+- 5 V display power
+- ground / current return
 
-- External input selects or modifies operating mode
-- Firmware updates the internal cube representation
-- Refresh logic continuously scans the cube
-- Driver hardware applies electrical switching to the active layer
-- The viewer perceives a stable 3D animation
+### IF-04 BLE Control Interface
+**From:** smartphone / BLE client  
+**To:** ESP32 control subsystem
 
----
+**Purpose**
+Carry end-user commands and settings wirelessly.
 
-## 8. External Interfaces
+**Carries**
+- mode changes
+- animation selection
+- parameter updates
+- start/stop or similar user commands
 
-The system architecture includes the following external interfaces at minimum:
+**Characteristics**
+- low-bandwidth control/configuration path
+- not timing-critical for refresh
+- logically separate from display scanning
 
-### 8.1 Power interface
-- external DC power input to the custom PCB
+### IF-05 Programming / Debug Interface
+**From:** PC or development tool  
+**To:** ESP32 control subsystem
 
-### 8.2 Programming and debug interface
-- firmware upload and development access for the ESP32
+**Purpose**
+Support firmware loading, debugging, and bring-up.
 
-### 8.3 User control interface
-- external command/configuration path implemented through the ESP32 platform
-- can be used for demo control, animation selection, or future application features
+**Carries**
+- firmware upload data
+- serial debug/logging data
+- development test access
 
-### 8.4 Mechanical/electrical cube interface
-- interconnection between the PCB and the 8×8×8 LED structure
+### IF-06 Scan Control Interface
+**From:** ESP32 control subsystem  
+**To:** LED driver subsystem
 
----
+**Purpose**
+Translate logical cube image data into electrical drive commands.
 
-## 9. System States
+**Carries**
+- row/column data
+- layer-select control
+- latch signals
+- blanking / enable timing
+- refresh sequencing information
 
-At architecture level, the system can be modeled with the following operating states:
+**Characteristics**
+- timing-critical
+- must support stable, flicker-free display refresh
+- must support brightness control strategy
 
-1. **Power-off** — no active logic or display output
-2. **Initialization** — power-up, peripheral setup, optional self-test
-3. **Idle / ready** — system initialized, waiting for or holding current mode
-4. **Active display** — normal animation and refresh operation
-5. **Diagnostic / test** — hardware verification patterns and troubleshooting support
-6. **Fault / safe state** — optional fallback if a critical internal problem is detected
+### IF-07 Drive Interface
+**From:** LED driver subsystem  
+**To:** LED cube subsystem
 
-This state-based view is useful for firmware design and test planning.
+**Purpose**
+Apply the switched electrical signals that create the visible output.
 
----
-
-## 10. Key Architectural Decisions
-
-### Decision 1 — ESP32 as central controller
-The ESP32 is selected as the main control device because it provides enough processing capability and flexible peripheral support for a custom LED cube controller while leaving room for future control features.
-
-### Decision 2 — Custom single-board PCB
-The project uses a custom PCB as the main system platform instead of loose module wiring. This improves electrical integration, reproducibility, and portfolio quality.
-
-### Decision 3 — Multiplexed display architecture
-A cube of 512 LEDs is implemented using scanning rather than full direct drive. This is the practical architecture for reducing pin count, routing complexity, and instantaneous driver requirements.
-
-### Decision 4 — Layered firmware structure
-Firmware is split into hardware, display, animation, and interface responsibilities to keep the codebase maintainable and testable.
-
-### Decision 5 — Documentation-first engineering approach
-The architecture is intentionally described in formal project documentation so that implementation can be traced to design intent and later validation evidence.
-
----
-
-## 11. Architectural Risks and Sensitivities
-
-The following items are the most architecture-sensitive parts of the project:
-
-### 11.1 Refresh timing risk
-If the scan rate is too low, visible flicker will occur. The firmware and driver design must therefore support a stable full-frame refresh rate.
-
-### 11.2 Power integrity risk
-Rapid switching of LED loads can inject noise into the system. Poor grounding, weak decoupling, or insufficient bulk capacitance may cause visual artifacts or controller instability.
-
-### 11.3 Thermal and current-loading risk
-Even with multiplexing, peak current paths can become significant. Driver devices, traces, and connectors must be dimensioned appropriately.
-
-### 11.4 Mapping complexity risk
-The logical voxel order and physical wiring order may not match naturally. A clear mapping layer in firmware is required to avoid difficult debugging later.
-
-### 11.5 Maintainability risk
-If scan logic, effect logic, and communication logic become tightly coupled, future changes will be harder. The layered firmware architecture is intended to reduce this risk.
+**Carries**
+- active layer enable
+- row/column drive states
+- multiplexed LED current paths
 
 ---
 
-## 12. Verification Implications
+## 7. System Operation
 
-The architecture directly suggests the following verification activities:
+At high level, the system operates as follows:
 
-- confirm stable power rails under dynamic LED load
-- verify controller startup and programming access
-- verify correct layer-by-layer scanning behavior
-- verify full-cube addressing and voxel mapping
-- verify flicker-free display under representative animations
-- verify communication/control path if implemented in the current revision
-- verify diagnostic modes and test patterns for bring-up support
+1. External 5 V power is applied to the PCB.
+2. The power subsystem establishes stable logic and display supply paths.
+3. The ESP32 boots, initializes peripherals, and loads the default operating state.
+4. A smartphone sends commands or settings over BLE.
+5. The ESP32 updates the active mode and internal cube model.
+6. The scan engine extracts one display layer at a time.
+7. The LED driver subsystem applies the correct row/column pattern and layer switching.
+8. The cube displays each layer for a short time window.
+9. The process repeats fast enough to produce a stable visible image.
 
-These checks should later be linked to the validation documents in `docs/04_validation/`.
+This results in two concurrent architectural paths:
 
----
+- a **slow control path** for BLE commands and mode changes
+- a **fast refresh path** for continuous multiplexed display scanning
 
-## 13. Traceability to Repository Structure
-
-This architecture document belongs in:
-
-```text
-docs/00_overview/system-architecture.md
-```
-
-It should be read together with:
-
-- `README.md` for project-level overview
-- hardware design files in `hardware/`
-- firmware notes and source material in `firmware/`
-- validation evidence in `docs/04_validation/`
+These two paths should remain separated in firmware structure.
 
 ---
 
-## 14. Conclusion
+## 8. Firmware Architecture View
 
-The 8×8×8 LED Cube is architected as a layered embedded system centered around a custom ESP32 control PCB. The core architectural idea is to separate user-facing behavior, firmware control, LED drive electronics, and power handling into clear subsystems. This makes the project easier to build, test, explain, and extend.
+The firmware should be structured in layers rather than written as one monolithic application.
 
-The selected architecture is appropriate for a portfolio-grade embedded project because it balances practical implementation constraints with clean engineering structure. It also creates a clear path from design decisions to hardware realization, firmware development, and final validation.
+### 8.1 Hardware abstraction layer
+Responsible for GPIO, timing resources, and low-level peripheral control.
+
+### 8.2 Display engine
+Responsible for converting the logical cube state into scan-ready output data.
+
+### 8.3 Animation engine
+Responsible for visual patterns, timing of effects, and mode-specific behavior.
+
+### 8.4 BLE communication layer
+Responsible for receiving external commands and exposing configuration hooks.
+
+### 8.5 Diagnostics and test services
+Responsible for bring-up patterns, startup checks, and development-time diagnostics.
+
+A practical runtime structure is:
+- a fast periodic refresh task or interrupt-driven scan mechanism
+- a main loop or scheduled tasks for animation updates and BLE handling
+- explicit test/diagnostic modes for bring-up and validation
+
+---
+
+## 9. Architectural Implications
+
+The architecture implies the following implementation rules:
+
+- firmware should remain layered and maintainable
+- scan timing must be treated as time-critical
+- BLE handling must not disturb stable refresh timing
+- power layout must separate noisy display-current paths from logic-sensitive paths
+- the driver stage must absorb LED switching demands instead of the ESP32 pins
+- no external animation memory is included in revision 1
+- USB/UART remains a development interface, not the main user control path
+
+---
+
+## 10. Out of Scope for Revision 1
+
+The following are outside the baseline architecture unless a later revision formally changes the project decisions:
+
+- RGB cube architecture
+- external animation memory
+- Wi-Fi as the main control path
+- USB as the primary end-user control interface
+- battery-powered architecture
+- modular multi-PCB architecture
+- audio-reactive or microphone-based features as baseline requirements
+
+---
+
+## 11. Verification-Relevant Architecture Points
+
+This architecture creates the following direct verification targets:
+
+- stable 5 V and 3.3 V rails under representative display load
+- reliable ESP32 startup, programming, and debug access
+- correct BLE command/control path
+- correct layer-by-layer scanning behavior
+- correct driver-to-cube electrical mapping
+- flicker-free display at intended operating modes
+- no visible refresh instability caused by BLE traffic or mode changes
+
+These points should later map into bring-up and validation documents.
+
+---
+
+## 12. Summary
+
+The project is architected as a single-board ESP32-controlled monochrome 8×8×8 LED cube with a dedicated driver stage and smartphone BLE control.
+
+The main architectural elements are:
+
+1. power subsystem
+2. ESP32 control subsystem
+3. LED driver subsystem
+4. LED cube subsystem
+5. BLE user interface subsystem
+
+The key interfaces are:
+
+- external 5 V power input
+- logic power distribution to the ESP32
+- display power distribution to the driver stage
+- BLE command/control input to the ESP32
+- programming/debug access to the ESP32
+- scan control from the ESP32 to the driver stage
+- electrical drive from the driver stage to the cube
+
+This high-level architecture matches the locked project decisions and gives a clear structure for schematic design, PCB implementation, firmware development, and validation.
