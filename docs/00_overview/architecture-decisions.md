@@ -1,150 +1,294 @@
 # LED Cube Project — Architecture Decisions
 
-**Date:** 2026-03-16  
-**Status:** Locked baseline for design phase
+**Date:** 2026-03-17  
+**Revision:** 1  
+**Status:** Locked baseline for revision 1 implementation
 
 ## 1. Purpose
 
-This document freezes the main technical decisions for the first full version of the 8×8×8 LED cube portfolio project. All following work — requirements, calculations, schematic, PCB, firmware, BOM, verification, and README — must follow this baseline unless this document is formally revised.
+This document freezes the top-level technical decisions for revision 1 of the 8×8×8 LED cube project.
 
-## 2. Locked decisions
+From this point forward, requirements, schematic work, PCB work, firmware structure, verification planning, and repository documentation must follow this baseline unless this document is formally revised.
 
-### 2.1 Microcontroller
-The main controller will be an **ESP32 module** mounted on the custom PCB.
-
-**Decision:** Use ESP32 as the main MCU.  
-**Reason:** It provides enough performance for multiplexing, animation handling, and wireless control, while also including BLE without extra hardware.
+The goal is to remove repeated top-level direction changes and allow implementation to proceed on a stable architecture.
 
 ---
 
-### 2.2 User control method
-The primary control interface will be a **smartphone over BLE**.
+## 2. Project identity for revision 1
 
-**Decision:** Use BLE smartphone control as the main user interface.  
-**Reason:** This fits the portfolio goal better than a purely wired interface and removes the need for a separate Bluetooth module.
+Revision 1 is defined as:
 
-**Note:**  
-USB/UART is still allowed for:
-- firmware upload
-- debugging
-- development testing
+> A portfolio-grade **8×8×8 monochrome LED cube** built on **one custom ESP32-based control PCB**, using **time-multiplexed layer scanning**, powered from **5 V**, controlled primarily by **BLE from a smartphone**, and storing animations in **ESP32 internal flash**.
 
-It is **not** the main end-user control method.
+This statement is the baseline technical direction for the project.
 
 ---
 
-### 2.3 Animation and data storage
-Animations will be stored in the **internal flash memory of the ESP32** for the first revision.
+## 3. Locked architecture decisions
 
-**Decision:** No external EEPROM, SD card, or other external memory in revision 1.  
-**Reason:** This reduces hardware complexity, PCB routing effort, failure points, and firmware scope in the first full build.
-
----
-
-### 2.4 Display type
-The cube will be a **monochrome 8×8×8 LED cube**.
-
-**Decision:** Use one LED color only in revision 1.  
-**Reason:** A monochrome cube is significantly more realistic for a clean first custom hardware project and keeps the electrical, firmware, and power design under control.
-
----
-
-### 2.5 Power architecture
-The system will use a **5 V main supply** with local regulation for the ESP32.
+### 3.1 Cube size and display type
 
 **Decision:**  
-- Main input supply: **5 V DC**
-- Logic rail for ESP32: **3.3 V**
-- External power adapter target: **5 V / 5 A minimum**
+Use a **monochrome 8×8×8 LED cube**.
+
+**Locked meaning:**  
+- 512 LEDs total
+- one LED color only in revision 1
+- no RGB implementation in revision 1
 
 **Reason:**  
-5 V is standard and practical for LED driving.  
-A dedicated 3.3 V rail is required for the ESP32.  
-5 A gives reasonable design margin for multiplexed operation, driver losses, startup conditions, and brightness tuning.
+This keeps the first full custom build realistic, easier to validate, and much more manageable in hardware, power, routing, and firmware complexity.
 
 ---
 
-### 2.6 Brightness strategy
-Brightness will be controlled through **multiplexing timing and firmware brightness control**, not by pushing the LEDs near extreme limits.
+### 3.2 Main controller
 
-**Decision:** Design for a stable, presentable brightness level rather than maximum possible brightness.  
-**Reason:** This improves reliability, reduces thermal stress, and keeps the first revision easier to validate.
+**Decision:**  
+Use an **ESP32 module** as the main controller on the custom PCB.
+
+**Locked meaning:**  
+- ESP32 is the only central MCU for revision 1
+- no secondary application MCU is planned
+- wireless capability comes from the ESP32 itself
+
+**Reason:**  
+The ESP32 provides sufficient processing headroom, flexible peripherals, and BLE support without adding extra wireless hardware.
 
 ---
 
-### 2.7 Cost target
-The project will stay within a controlled student-level budget.
+### 3.3 User control method
 
-**Decision:** Target core electronics cost of **about €100 or less**, excluding:
+**Decision:**  
+Use **BLE smartphone control** as the primary end-user control interface.
+
+**Locked meaning:**  
+- BLE is the intended user-facing control path
+- USB/UART may be used for programming, debugging, logging, and bring-up
+- USB/UART is not the main user interface
+
+**Reason:**  
+This matches the portfolio goal better than a wired-only interface and keeps the architecture modern without requiring extra communication hardware.
+
+---
+
+### 3.4 Animation and configuration storage
+
+**Decision:**  
+Store revision 1 animations and configuration data in **ESP32 internal flash only**.
+
+**Locked meaning:**  
+- no external EEPROM
+- no SD card
+- no external flash memory as a required subsystem in revision 1
+
+**Reason:**  
+This reduces hardware scope, firmware scope, routing complexity, and failure points in the first implementation.
+
+---
+
+### 3.5 Display driving method
+
+**Decision:**  
+Use a **multiplexed scan architecture with one active cube layer at a time**.
+
+**Locked meaning:**  
+- the cube is not driven as 512 continuously powered LEDs
+- the display is refreshed slice-by-slice
+- one layer is enabled at a time while line data is applied for that layer
+- a full image is created by repeated fast refresh of all 8 layers
+
+**Reason:**  
+This is the practical architecture for a 512-LED cube because it reduces simultaneous current demand, pin-count pressure, and overall implementation complexity.
+
+---
+
+### 3.6 Driver-stage architecture
+
+**Decision:**  
+Use a **dedicated electrical driver stage** between the ESP32 and the LED cube.
+
+**Locked meaning:**  
+- the ESP32 must not directly drive the cube power paths
+- LED line control and layer switching are handled by dedicated driver circuitry
+- the architecture includes:
+  - a **line-driving stage** for the active slice data
+  - a **layer-switching stage** for layer enable control
+- exact IC/transistor part numbers remain implementation-level choices, but the topology itself is now fixed
+
+**Reason:**  
+This protects the ESP32 from LED load currents, improves electrical robustness, and removes the remaining top-level ambiguity that would otherwise block schematic and firmware implementation.
+
+---
+
+### 3.7 Power architecture
+
+**Decision:**  
+Use a **5 V main input supply** with local **3.3 V regulation** for the ESP32 and low-voltage logic.
+
+**Locked meaning:**  
+- main system input: **5 V DC**
+- logic rail: **3.3 V**
+- display power and logic power must be treated as separate layout/current domains even if they come from the same external source
+- design must include local decoupling and bulk capacitance sized for multiplexed current peaks
+- external adapter baseline: **5 V / 5 A minimum**
+
+**Reason:**  
+5 V is practical for LED drive circuitry, while the ESP32 requires 3.3 V logic. Separating logic and display-current behavior improves stability and reduces noise-related problems.
+
+---
+
+### 3.8 Brightness strategy
+
+**Decision:**  
+Control brightness through **refresh timing / dwell time / firmware brightness control**, not by pushing the LEDs to extreme operating conditions.
+
+**Locked meaning:**  
+- brightness is achieved by controlled multiplex timing
+- reliability and stable operation are preferred over maximum possible brightness
+- thermal and current margins take priority over aggressive drive settings
+
+**Reason:**  
+This gives a more robust first revision and reduces the risk of thermal stress, unstable operation, and difficult validation.
+
+---
+
+### 3.9 PCB strategy
+
+**Decision:**  
+Use **one main custom PCB** as the system base.
+
+**Locked meaning:**  
+The main PCB will contain, as applicable:
+- ESP32 module
+- power input and regulation
+- LED line driver circuitry
+- layer switching circuitry
+- programming/debug access
+- connectors and test points required for bring-up and integration
+
+**Reason:**  
+A single-board design gives stronger engineering value, better integration, and a cleaner final portfolio result than a breadboard or multi-module prototype.
+
+---
+
+### 3.10 Firmware architecture
+
+**Decision:**  
+Use a **layered firmware structure**.
+
+**Locked meaning:**  
+Revision 1 firmware must be separated into at least these responsibilities:
+- hardware abstraction / low-level IO
+- refresh / scan engine
+- voxel or frame representation
+- animation logic
+- communication / control handling
+- diagnostics / test patterns
+
+**Additional rule:**  
+The scan-refresh path is time-critical and must remain separated from animation and BLE handling.
+
+**Reason:**  
+This keeps the firmware maintainable, testable, and much easier to debug during bring-up.
+
+---
+
+### 3.11 Bring-up and validation support
+
+**Decision:**  
+Revision 1 must support **diagnostic and test-pattern modes** independently of the final BLE control flow.
+
+**Locked meaning:**  
+Implementation must allow:
+- basic power-up verification
+- line/layer test patterns
+- mapping verification
+- serial debug output or equivalent development diagnostics
+
+**Reason:**  
+Bring-up should not depend on the BLE control layer being fully finished. This reduces implementation risk.
+
+---
+
+### 3.12 Cost target
+
+**Decision:**  
+Target core electronics cost of **about €100 or less**, excluding:
 - tools
 - shipping
 - optional enclosure
-- spare parts bought for safety margin
+- spare parts bought as safety margin
 
-**Reason:** The project is intended as a portfolio build, but it should still remain realistic and defensible as a student engineering project.
-
----
-
-### 2.8 PCB strategy
-The project will use **one main custom PCB** as the base of the cube.
-
-**Decision:** The PCB will contain:
-- ESP32 module
-- LED driving circuitry
-- layer switching circuitry
-- power distribution
-- programming/debug interface
-- connectors/test points as needed
-
-**Reason:** This gives the project a stronger engineering and portfolio value than a breadboard or multi-board prototype and creates a cleaner final build.
+**Reason:**  
+The project should remain realistic as a student build while still being strong enough for portfolio use.
 
 ---
 
-## 4. Practical interpretation of these decisions
+## 4. Explicitly out of scope for revision 1
 
-Based on the locked decisions above, the project is now defined as:
-
-> A portfolio-grade **8×8×8 monochrome LED cube** built on a **single custom PCB**, controlled by an **ESP32** with **BLE smartphone control**, powered from **5 V**, and storing animations in **ESP32 internal flash**.
-
-## 5. Explicitly out of scope for revision 1
-
-The following features are **not part of revision 1 unless added by a later revision document**:
+The following are not part of revision 1 unless this document is revised:
 
 - RGB LEDs
 - external animation memory
-- Wi-Fi cloud control
-- full custom mobile app as a required deliverable
-- battery power
-- modular multi-PCB architecture
+- Wi-Fi/cloud control
+- battery operation
 - audio-reactive features
 - microphone input
+- modular multi-PCB architecture as the baseline design
 - USB as the main user control interface
+- a full custom mobile app as a required deliverable
 
-These may be added later only after the first version is working.
+These are possible future extensions, not revision 1 requirements.
 
-## 6. Immediate consequences for the next project documents
+---
 
-The next documents must assume:
+## 5. Implementation rules derived from the architecture
 
-1. **ESP32-based firmware architecture**
-2. **BLE communication path**
-3. **single-board electrical design**
-4. **5 V power input and 3.3 V logic regulation**
-5. **monochrome LED drive calculations**
-6. **no external memory subsystem**
+The following are now fixed assumptions for implementation:
 
-## 7. Next engineering tasks derived from this decision
+1. Hardware design must assume **ESP32 + dedicated driver stage + 8-layer multiplexing**.
+2. Firmware design must assume **continuous refresh scanning** independent of BLE timing.
+3. Power design must assume **dynamic LED current peaks** and separate logic/display current behavior.
+4. Validation must include **power integrity, layer scanning, mapping correctness, brightness stability, and bring-up diagnostics**.
+5. Documentation must treat **BLE**, **single-board PCB**, **monochrome display**, and **internal-flash storage** as baseline facts, not open options.
 
-The next design steps are:
+---
 
-1. Write the **requirements document**
-2. Create the **high-level architecture/block diagram**
-3. Do **LED current and power calculations**
-4. Choose the **driver topology**
-5. Build **BOM v1**
-6. Start the **schematic**
+## 6. What is still flexible
 
-## 8. Revision rule
+The following are still implementation-level choices and do not require a top-level architecture revision by themselves:
 
-This document is considered the active baseline.  
-Any major change to MCU, power system, display type, memory strategy, or PCB strategy must be recorded as a new revision before design work continues.
+- exact ESP32 module variant
+- exact LED driver IC part numbers
+- exact transistor or MOSFET part numbers
+- exact connector choice
+- exact PCB layout strategy
+- exact BLE command format
+- exact animation set included in revision 1
+- exact firmware file structure
+
+These may be optimized during implementation as long as they remain inside the locked architecture.
+
+---
+
+## 7. Revision control rule
+
+This document is the active revision 1 baseline.
+
+Any change to the following requires a formal revision of this file before implementation continues:
+- MCU family
+- cube size
+- monochrome vs RGB display type
+- primary user-control method
+- memory strategy
+- power-input architecture
+- single-board vs multi-board baseline
+- multiplexed-scan vs other top-level display architecture
+
+---
+
+## 8. Conclusion
+
+Revision 1 is now locked as an **ESP32-based, BLE-controlled, monochrome 8×8×8 LED cube on a single custom PCB with multiplexed layer scanning and internal-flash animation storage**.
+
+No unresolved top-level architecture decision should block requirements work, schematic work, PCB work, firmware structure, or validation planning after this revision.
