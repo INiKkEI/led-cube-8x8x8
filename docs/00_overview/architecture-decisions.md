@@ -6,9 +6,7 @@
 
 ## 1. Purpose
 
-This document freezes the top-level technical decisions for revision 1 of the 8×8×8 LED cube project.
-
-From this point forward, requirements, schematic work, PCB work, firmware structure, verification planning, and repository documentation must follow this baseline unless this document is formally revised.
+This document freezes the top-level technical decisions for revision 1 of the 8×8×8 LED cube project. From this point forward, requirements, schematic work, PCB work, firmware structure, verification planning, and repository documentation must follow this baseline unless this document is formally revised.
 
 The goal is to remove repeated top-level direction changes and allow implementation to proceed on a stable architecture.
 
@@ -28,86 +26,75 @@ This statement is the baseline technical direction for the project.
 
 ### 3.1 Cube size and display type
 
-**Decision:**  
-Use a **monochrome 8×8×8 LED cube**.
+**Decision:** Use a **monochrome 8×8×8 LED cube**.
 
-**Locked meaning:**  
+**Locked meaning:**
 - 512 LEDs total
 - one LED color only in revision 1
 - no RGB implementation in revision 1
 
-**Reason:**  
-This keeps the first full custom build realistic, easier to validate, and much more manageable in hardware, power, routing, and firmware complexity.
+**Reason:** This keeps the first full custom build realistic, easier to validate, and much more manageable in hardware, power, routing, and firmware complexity.
 
 ---
 
 ### 3.2 Main controller
 
-**Decision:**  
-Use an **ESP32 module** as the main controller on the custom PCB.
+**Decision:** Use an **ESP32 module** as the main controller on the custom PCB.
 
-**Locked meaning:**  
+**Locked meaning:**
 - ESP32 is the only central MCU for revision 1
 - no secondary application MCU is planned
 - wireless capability comes from the ESP32 itself
 
-**Reason:**  
-The ESP32 provides sufficient processing headroom, flexible peripherals, and BLE support without adding extra wireless hardware.
+**Reason:** The ESP32 provides sufficient processing headroom, flexible peripherals, and BLE support without adding extra wireless hardware.
 
 ---
 
 ### 3.3 User control method
 
-**Decision:**  
-Use **BLE smartphone control** as the primary end-user control interface.
+**Decision:** Use **BLE smartphone control** as the primary end-user control interface.
 
-**Locked meaning:**  
+**Locked meaning:**
 - BLE is the intended user-facing control path
 - USB/UART may be used for programming, debugging, logging, and bring-up
 - USB/UART is not the main user interface
 
-**Reason:**  
-This matches the portfolio goal better than a wired-only interface and keeps the architecture modern without requiring extra communication hardware.
+**Reason:** This matches the portfolio goal better than a wired-only interface and keeps the architecture modern without requiring extra communication hardware.
 
 ---
 
 ### 3.4 Animation and configuration storage
 
-**Decision:**  
-Store revision 1 animations and configuration data in **ESP32 internal flash only**.
+**Decision:** Store revision-1 animations and configuration data in **ESP32 internal flash only**.
 
-**Locked meaning:**  
+**Locked meaning:**
 - no external EEPROM
 - no SD card
 - no external flash memory as a required subsystem in revision 1
 
-**Reason:**  
-This reduces hardware scope, firmware scope, routing complexity, and failure points in the first implementation.
+**Reason:** This reduces hardware scope, firmware scope, routing complexity, and failure points in the first implementation.
 
 ---
 
 ### 3.5 Display driving method
 
-**Decision:**  
-Use a **multiplexed scan architecture with one active cube layer at a time**.
+**Decision:** Use a **multiplexed scan architecture with one active cube layer at a time**.
 
-**Locked meaning:**  
+**Locked meaning:**
 - the cube is not driven as 512 continuously powered LEDs
 - the display is refreshed slice-by-slice
 - one layer is enabled at a time while line data is applied for that layer
 - a full image is created by repeated fast refresh of all 8 layers
 
-**Reason:**  
-This is the practical architecture for a 512-LED cube because it reduces simultaneous current demand, pin-count pressure, and overall implementation complexity.
+**Reason:** This is the practical architecture for a 512-LED cube because it reduces simultaneous current demand, pin-count pressure, and overall implementation complexity.
 
 ---
 
 ### 3.6 Driver-stage architecture
 
-**Decision:**  
-Use a **dedicated electrical driver stage** between the ESP32 and the LED cube.
+**Decision:** Use a **dedicated electrical driver stage** between the ESP32 and the LED cube.
 
-**Locked meaning:**  
+**Locked meaning:**
 - the ESP32 must not directly drive the cube power paths
 - LED line control and layer switching are handled by dedicated driver circuitry
 - the architecture includes:
@@ -115,50 +102,43 @@ Use a **dedicated electrical driver stage** between the ESP32 and the LED cube.
   - a **layer-switching stage** for layer enable control
 - exact IC/transistor part numbers remain implementation-level choices, but the topology itself is now fixed
 
-**Reason:**  
-This protects the ESP32 from LED load currents, improves electrical robustness, and removes the remaining top-level ambiguity that would otherwise block schematic and firmware implementation.
+**Reason:** This protects the ESP32 from LED load currents, improves electrical robustness, and removes the remaining top-level ambiguity that would otherwise block schematic and firmware implementation.
 
 ---
 
 ### 3.7 Power architecture
 
-**Decision:**  
-Use a **5 V main input supply** with local **3.3 V regulation** for the ESP32 and low-voltage logic.
+**Decision:** Use a **5 V main input supply** with local **3.3 V regulation** for the ESP32 and low-voltage logic.
 
-**Locked meaning:**  
+**Locked meaning:**
 - main system input: **5 V DC**
 - logic rail: **3.3 V**
 - display power and logic power must be treated as separate layout/current domains even if they come from the same external source
 - design must include local decoupling and bulk capacitance sized for multiplexed current peaks
-- external adapter baseline: **5 V / 5 A minimum**
+- external adapter baseline: **5 V / 3 A minimum**
 
-**Reason:**  
-5 V is practical for LED drive circuitry, while the ESP32 requires 3.3 V logic. Separating logic and display-current behavior improves stability and reduces noise-related problems.
+**Reason:** 5 V is practical for LED drive circuitry, while the ESP32 requires 3.3 V logic. Separating logic and display-current behavior improves stability and reduces noise-related problems.
 
 ---
 
 ### 3.8 Brightness strategy
 
-**Decision:**  
-Control brightness through **refresh timing / dwell time / firmware brightness control**, not by pushing the LEDs to extreme operating conditions.
+**Decision:** Control brightness through **refresh timing / dwell time / firmware brightness control**, not by pushing the LEDs to extreme operating conditions.
 
-**Locked meaning:**  
+**Locked meaning:**
 - brightness is achieved by controlled multiplex timing
 - reliability and stable operation are preferred over maximum possible brightness
 - thermal and current margins take priority over aggressive drive settings
 
-**Reason:**  
-This gives a more robust first revision and reduces the risk of thermal stress, unstable operation, and difficult validation.
+**Reason:** This gives a more robust first revision and reduces the risk of thermal stress, unstable operation, and difficult validation.
 
 ---
 
 ### 3.9 PCB strategy
 
-**Decision:**  
-Use **one main custom PCB** as the system base.
+**Decision:** Use **one main custom PCB** as the system base.
 
-**Locked meaning:**  
-The main PCB will contain, as applicable:
+**Locked meaning:** The main PCB will contain, as applicable:
 - ESP32 module
 - power input and regulation
 - LED line driver circuitry
@@ -166,18 +146,15 @@ The main PCB will contain, as applicable:
 - programming/debug access
 - connectors and test points required for bring-up and integration
 
-**Reason:**  
-A single-board design gives stronger engineering value, better integration, and a cleaner final portfolio result than a breadboard or multi-module prototype.
+**Reason:** A single-board design gives stronger engineering value, better integration, and a cleaner final portfolio result than a breadboard or multi-module prototype.
 
 ---
 
 ### 3.10 Firmware architecture
 
-**Decision:**  
-Use a **layered firmware structure**.
+**Decision:** Use a **layered firmware structure**.
 
-**Locked meaning:**  
-Revision 1 firmware must be separated into at least these responsibilities:
+**Locked meaning:** Revision 1 firmware must be separated into at least these responsibilities:
 - hardware abstraction / low-level IO
 - refresh / scan engine
 - voxel or frame representation
@@ -185,42 +162,35 @@ Revision 1 firmware must be separated into at least these responsibilities:
 - communication / control handling
 - diagnostics / test patterns
 
-**Additional rule:**  
-The scan-refresh path is time-critical and must remain separated from animation and BLE handling.
+**Additional rule:** The scan-refresh path is time-critical and must remain separated from animation and BLE handling.
 
-**Reason:**  
-This keeps the firmware maintainable, testable, and much easier to debug during bring-up.
+**Reason:** This keeps the firmware maintainable, testable, and much easier to debug during bring-up.
 
 ---
 
 ### 3.11 Bring-up and validation support
 
-**Decision:**  
-Revision 1 must support **diagnostic and test-pattern modes** independently of the final BLE control flow.
+**Decision:** Revision 1 must support **diagnostic and test-pattern modes** independently of the final BLE control flow.
 
-**Locked meaning:**  
-Implementation must allow:
+**Locked meaning:** Implementation must allow:
 - basic power-up verification
 - line/layer test patterns
 - mapping verification
 - serial debug output or equivalent development diagnostics
 
-**Reason:**  
-Bring-up should not depend on the BLE control layer being fully finished. This reduces implementation risk.
+**Reason:** Bring-up should not depend on the BLE control layer being fully finished. This reduces implementation risk.
 
 ---
 
 ### 3.12 Cost target
 
-**Decision:**  
-Target core electronics cost of **about €100 or less**, excluding:
+**Decision:** Target core electronics cost of **about €100 or less**, excluding:
 - tools
 - shipping
 - optional enclosure
 - spare parts bought as safety margin
 
-**Reason:**  
-The project should remain realistic as a student build while still being strong enough for portfolio use.
+**Reason:** The project should remain realistic as a student build while still being strong enough for portfolio use.
 
 ---
 
@@ -256,9 +226,11 @@ These may be optimized during implementation as long as they remain inside the l
 ## 6. Revision 1 Scope
 
 ### Purpose
+
 Revision 1 is the minimum complete build of the project. Its purpose is to deliver a working, documented, and verifiable 8×8×8 LED cube without adding non-essential features that increase hardware, firmware, or integration risk.
 
 ### Revision 1 must include
+
 1. A functional **8×8×8 monochrome LED cube** with **512 LEDs**.
 2. **One custom ESP32-based control PCB** as the main hardware platform.
 3. A **dedicated driver stage** between the ESP32 and the cube for LED line driving and layer switching.
@@ -281,7 +253,9 @@ Revision 1 is the minimum complete build of the project. Its purpose is to deliv
    - successful BLE control of the cube
 
 ### Explicitly out of scope for revision 1
+
 The following are not required for revision 1 and must be treated as later work:
+
 - RGB LED implementation
 - external EEPROM, SD card, or external flash for animation storage
 - Wi-Fi or cloud control
@@ -293,13 +267,9 @@ The following are not required for revision 1 and must be treated as later work:
 - a full custom mobile app as a required deliverable
 
 ### Scope interpretation rules
+
 1. Revision 1 is a **working first complete system**, not a maximum-feature version.
 2. A **generic BLE client app** is acceptable for revision 1; a custom app is optional future work.
 3. The built-in animation set only needs to be **small but demonstrable**.
 4. Bring-up and diagnostics are part of revision 1 because they reduce implementation risk and support verification.
 5. Any feature not listed in “must include” is not automatically part of revision 1.
-
-### Documentation consistency rule
-- **README** must describe only revision-1 baseline features as planned deliverables.
-- **Requirements documents** must treat revision-1 items as mandatory requirements and place all other ideas under future work / later revisions.
-- **Architecture documents** must keep the baseline fixed as: ESP32, monochrome 8×8×8 cube, single custom PCB, dedicated driver stage, multiplexed scanning, BLE primary control, internal flash only.
