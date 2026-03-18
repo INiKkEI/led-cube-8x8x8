@@ -44,7 +44,6 @@ This document follows the current project baseline:
 - animations are stored in **ESP32 internal flash**
 - there is **no external memory** in revision 1
 - the system uses **5 V main input**
-- the ESP32 logic domain requires a **3.3 V rail**
 - the external adapter target is **5 V / 5 A minimum**
 
 ---
@@ -73,7 +72,6 @@ Hardware shall:
 
 - accept the external **5 V DC** input
 - distribute power to LED-driving circuitry and support electronics
-- generate or provide the required **3.3 V logic rail** for the ESP32
 - provide bulk capacitance and local decoupling where needed
 - define grounding and current return paths
 - size traces, connectors, regulators, and switching components for expected load
@@ -219,7 +217,6 @@ These assumptions define the handoff between hardware and firmware.
 ### 8.1 Power interface assumptions
 
 - The board receives **5 V main input**
-- Hardware is responsible for distributing this input and deriving the required **3.3 V rail** for the ESP32
 - Firmware assumes valid rails are present and stable before normal operation
 - Firmware does not manage voltage conversion itself
 
