@@ -212,15 +212,15 @@ If any acceptance criterion fails, Rev 1 is not yet fully accepted and the failu
 | Acceptance Criterion | Related Test Cases |
 |---|---|
 | AC-01 | TP-05, TP-06 |
-| AC-02 | TP-10, TP-12, TP-30 |
-| AC-03 | TP-11 |
-| AC-04 | TP-13, TP-14, TP-19 |
-| AC-05 | TP-15, TP-18 |
-| AC-06 | TP-16, TP-20 |
-| AC-07 | TP-17, TP-19 |
-| AC-08 | TP-21, TP-22, TP-29 |
-| AC-09 | TP-25, TP-26 |
-| AC-10 | TP-27, TP-28 |
-| AC-11 | TP-13, TP-14, TP-15, TP-16 |
-| AC-12 | TP-23, TP-24 |
-| AC-13 | TP-29, TP-31, TP-32 |
+| AC-02 | TP-09, TP-11, TP-29 |
+| AC-03 | TP-10 |
+| AC-04 | TP-12, TP-13, TP-18 |
+| AC-05 | TP-14, TP-17 |
+| AC-06 | TP-15, TP-19 |
+| AC-07 | TP-16, TP-18 |
+| AC-08 | TP-20, TP-21, TP-28 |
+| AC-09 | TP-24, TP-25 |
+| AC-10 | TP-26, TP-27 |
+| AC-11 | TP-12, TP-13, TP-14, TP-15 |
+| AC-12 | TP-22, TP-23 |
+| AC-13 | TP-28, TP-30, TP-31 |
