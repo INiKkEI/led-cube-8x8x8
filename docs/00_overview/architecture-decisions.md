@@ -108,16 +108,14 @@ This statement is the baseline technical direction for the project.
 
 ### 3.7 Power architecture
 
-**Decision:** Use a **5 V main input supply** with local **3.3 V regulation** for the ESP32 and low-voltage logic.
+**Decision:** Use a **5 V main input supply**.
 
 **Locked meaning:**
 - main system input: **5 V DC**
-- logic rail: **3.3 V**
-- display power and logic power must be treated as separate layout/current domains even if they come from the same external source
 - design must include local decoupling and bulk capacitance sized for multiplexed current peaks
-- external adapter baseline: **5 V / 3 A minimum**
+- external adapter baseline: **5 V / 5 A minimum**
 
-**Reason:** 5 V is practical for LED drive circuitry, while the ESP32 requires 3.3 V logic. Separating logic and display-current behavior improves stability and reduces noise-related problems.
+**Reason:** 5 V is practical for LED drive circuitry.
 
 ---
 
@@ -200,7 +198,7 @@ The following are now fixed assumptions for implementation:
 
 1. Hardware design must assume **ESP32 + dedicated driver stage + 8-layer multiplexing**.
 2. Firmware design must assume **continuous refresh scanning** independent of BLE timing.
-3. Power design must assume **dynamic LED current peaks** and separate logic/display current behavior.
+3. Power design must assume **dynamic LED current peaks**.
 4. Validation must include **power integrity, layer scanning, mapping correctness, brightness stability, and bring-up diagnostics**.
 5. Documentation must treat **BLE**, **single-board PCB**, **monochrome display**, and **internal-flash storage** as baseline facts, not open options.
 
@@ -235,7 +233,7 @@ Revision 1 is the minimum complete build of the project. Its purpose is to deliv
 2. **One custom ESP32-based control PCB** as the main hardware platform.
 3. A **dedicated driver stage** between the ESP32 and the cube for LED line driving and layer switching.
 4. A **multiplexed display architecture** with **one active layer at a time**.
-5. **5 V external power input** with local **3.3 V regulation** for the ESP32 and logic.
+5. **5 V external power input**.
 6. Firmware that provides:
    - hardware initialization
    - continuous refresh / scan control
