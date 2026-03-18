@@ -37,7 +37,7 @@ Validation methods use these codes:
 | FR-02 | The system shall use **one custom ESP32-based main control PCB** as the primary controller platform. | A custom PCB is present and hosts the ESP32-based control electronics used to operate the cube. | INS |
 | FR-03 | The system shall use a **dedicated driver stage** between the ESP32 and the cube. | The schematic and assembled design show dedicated circuitry for LED line driving and layer switching, and the cube is not powered directly from ESP32 GPIO current paths. | INS, TEST |
 | FR-04 | The display shall use a **multiplexed scan architecture with one active layer at a time**. | During diagnostic operation, layer stepping shows only the intended active layer at each scan step. | TEST |
-| FR-05 | The system shall accept **5 V external input power** and provide a **3.3 V logic rail** for the ESP32 and low-voltage logic. | The board accepts the intended 5 V input, and the 3.3 V rail measures within an acceptable operating range for the ESP32 during bring-up. | TEST |
+| FR-05 | The system shall accept **5 V external input power**. | The board accepts the intended 5 V input, and the 5 V rail measures within an acceptable operating range for the ESP32 during bring-up. | TEST |
 | FR-06 | The system shall store revision-1 animations and configuration data in **ESP32 internal flash only**. | No external EEPROM, SD card, or external flash device is required for the baseline animation set used in revision 1. | INS, DEMO |
 | FR-07 | The firmware shall provide **hardware initialization, refresh scanning, display mapping, animation playback, and diagnostic/test-pattern modes**. | Test firmware and baseline application firmware can initialize the hardware, refresh the cube, show mapped patterns, run at least one built-in animation, and enter a diagnostic mode. | DEMO, TEST |
 | FR-08 | The system shall support **BLE-based smartphone control** for basic user commands. | A smartphone or generic BLE client can connect and successfully trigger at least one intended user action such as changing mode, animation, or speed. | DEMO, TEST |
@@ -50,7 +50,7 @@ Validation methods use these codes:
 
 | ID | Requirement | Acceptance Criteria | Planned Validation |
 |---|---|---|---|
-| NFR-01 | The design shall target a baseline external supply of **5 V / 3 A** for revision 1 planning. | Power planning, architecture documentation, and later hardware calculations use **5 V / 3 A** as the baseline adapter target unless formally revised. | INS, ANL |
+| NFR-01 | The design shall target a baseline external supply of **5 V / 5 A** for revision 1 planning. | Power planning, architecture documentation, and later hardware calculations use **5 V / 5 A** as the baseline adapter target unless formally revised. | INS, ANL |
 | NFR-02 | The system shall remain electrically stable during normal scan operation. | Normal patterns and baseline animations run without controller resets, brownouts, or obvious corruption caused by supply instability. | TEST |
 | NFR-03 | The display shall be visually stable enough for normal demonstration use. | In normal indoor viewing conditions, baseline patterns and animations show no obvious flicker that would undermine demonstration quality. | DEMO |
 | NFR-04 | The design shall prioritize reliability and safe operating margins over extreme brightness. | The chosen current, timing, and driver strategy remain within component limits documented by the design work and do not rely on intentionally extreme operating conditions. | ANL, TEST |
