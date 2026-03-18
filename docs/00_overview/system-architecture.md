@@ -17,7 +17,6 @@ This architecture follows the locked project decisions:
 - **Display type:** monochrome 8×8×8 LED cube
 - **Animation storage:** ESP32 internal flash only
 - **Main power input:** 5 V DC
-- **Logic rail:** local 3.3 V regulation for ESP32 logic
 - **Power target:** external adapter sized for the cube and driver load
 - **Hardware platform:** one main custom PCB
 - **Display method:** multiplexed scanning through a dedicated driver stage
@@ -65,7 +64,7 @@ flowchart TD
     DRV -->|multiplexed LED drive signals and current paths| CUBE
 ```
 
-**Figure — High-level system architecture.** The power subsystem receives external 5 V input and provides separate logic and display power paths. The ESP32 is the central control block and handles BLE communication, animation logic, and scan generation. The LED driver subsystem converts ESP32 control signals into multiplexed drive signals for the monochrome 8×8×8 LED cube. Programming/debug access is a development-only interface to the ESP32.
+**Figure — High-level system architecture.** The power subsystem receives external 5 V input and provides logic and display power paths. The ESP32 is the central control block and handles BLE communication, animation logic, and scan generation. The LED driver subsystem converts ESP32 control signals into multiplexed drive signals for the monochrome 8×8×8 LED cube. Programming/debug access is a development-only interface to the ESP32.
 
 ---
 
@@ -78,7 +77,6 @@ The power subsystem is responsible for electrical supply handling and rail distr
 **Responsibilities**
 - receive the external 5 V DC input
 - distribute 5 V power to the LED driver stage
-- generate or provide the regulated 3.3 V logic rail for the ESP32
 - provide local decoupling and bulk capacitance
 - limit the effect of display-current transients on logic stability
 - support PCB-level separation of noisy display-current paths and sensitive logic paths
@@ -182,29 +180,7 @@ Provide the main electrical input for the complete system.
 - 5 V power
 - ground / return
 
-### IF-02 Logic Power Interface
-**From:** power subsystem  
-**To:** ESP32 control subsystem
-
-**Purpose**
-Provide stable logic power for the controller and support circuitry.
-
-**Carries**
-- 3.3 V logic rail
-- ground
-
-### IF-03 Display Power Interface
-**From:** power subsystem  
-**To:** LED driver subsystem
-
-**Purpose**
-Provide the power used by the LED switching and display-current path.
-
-**Carries**
-- 5 V display power
-- ground / current return
-
-### IF-04 BLE Control Interface
+### IF-02 BLE Control Interface
 **From:** smartphone / BLE client  
 **To:** ESP32 control subsystem
 
@@ -222,7 +198,7 @@ Carry end-user commands and settings wirelessly.
 - not timing-critical for refresh
 - logically separate from display scanning
 
-### IF-05 Programming / Debug Interface
+### IF-03 Programming / Debug Interface
 **From:** PC or development tool  
 **To:** ESP32 control subsystem
 
@@ -234,7 +210,7 @@ Support firmware loading, debugging, and bring-up.
 - serial debug/logging data
 - development test access
 
-### IF-06 Scan Control Interface
+### IF-04 Scan Control Interface
 **From:** ESP32 control subsystem  
 **To:** LED driver subsystem
 
@@ -253,7 +229,7 @@ Translate logical cube image data into electrical drive commands.
 - must support stable, flicker-free display refresh
 - must support brightness control strategy
 
-### IF-07 Drive Interface
+### IF-05 Drive Interface
 **From:** LED driver subsystem  
 **To:** LED cube subsystem
 
@@ -348,7 +324,7 @@ The following are outside the baseline architecture unless a later revision form
 
 This architecture creates the following direct verification targets:
 
-- stable 5 V and 3.3 V rails under representative display load
+- stable 5 V rail under representative display load
 - reliable ESP32 startup, programming, and debug access
 - correct BLE command/control path
 - correct layer-by-layer scanning behavior
@@ -375,8 +351,6 @@ The main architectural elements are:
 The key interfaces are:
 
 - external 5 V power input
-- logic power distribution to the ESP32
-- display power distribution to the driver stage
 - BLE command/control input to the ESP32
 - programming/debug access to the ESP32
 - scan control from the ESP32 to the driver stage
