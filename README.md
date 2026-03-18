@@ -17,8 +17,8 @@ Revision 1 is based on these locked decisions:
 - **Drive method:** dedicated driver stage with multiplexed layer scanning
 - **User control:** BLE from a smartphone
 - **Storage:** ESP32 internal flash only
-- **Power:** 5 V external input with local 3.3 V regulation
-- **Power target:** baseline adapter target **5 V / 3 A**
+- **Power:** 5 V external input
+- **Power target:** baseline adapter target **5 V / 5 A**
 - **Main goal:** portfolio-grade build with transparent documentation
 
 The full baseline is defined in:
