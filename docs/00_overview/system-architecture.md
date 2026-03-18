@@ -47,14 +47,14 @@ A separate **programming/debug interface** is included for firmware upload and d
 flowchart TD
     USER[Smartphone / BLE<br/>mode selection and configuration]
     VIN[External 5 V DC Input<br/>adapter / PSU]
-    PWR[Power Subsystem<br/>5 V distribution<br/>3.3 V regulation<br/>filtering and decoupling]
+    PWR[Power Subsystem<br/>5 V distribution<br/>filtering and decoupling]
     MCU[ESP32 Control Subsystem<br/>system state<br/>animation engine<br/>BLE handling<br/>scan engine<br/>internal flash animation storage]
     DBG[Programming / Debug Interface<br/>USB / UART<br/>development only]
     DRV[LED Driver Subsystem<br/>row / column drive<br/>layer switching<br/>current handling]
     CUBE[8×8×8 Monochrome LED Cube<br/>512 LEDs<br/>multiplexed visual output]
 
     VIN -->|5 V input| PWR
-    PWR -->|3.3 V logic rail| MCU
+    PWR -->|5 V logic rail| MCU
     PWR -->|5 V display power| DRV
 
     USER -->|BLE commands and settings| MCU
