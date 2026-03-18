@@ -165,78 +165,77 @@ For simple project tracking, defects may be classified as:
 |---|---|---|---|---|
 | TP-05 | Current-limited first power-on | Apply supply with bench current limit | Board powers without abnormal current surge | No smoke, overheating, or immediate overcurrent trip |
 | TP-06 | Input voltage verification | Measure system input node under power | Correct input voltage reaches board | Measured input is within intended supply range |
-| TP-07 | 3.3 V rail verification | Measure regulator output | ESP32 rail is valid and stable | 3.3 V rail is present and stable enough for ESP32 operation |
-| TP-08 | Idle current measurement | Measure supply current after boot in idle/test-safe state | Current draw is plausible and repeatable | Idle current remains stable and within expected engineering estimate |
-| TP-09 | Dynamic load stability | Observe supply rail during animation / scanning | No unacceptable droop or reset behavior | No controller resets or obvious display corruption under normal patterns |
+| TP-07 | Idle current measurement | Measure supply current after boot in idle/test-safe state | Current draw is plausible and repeatable | Idle current remains stable and within expected engineering estimate |
+| TP-08 | Dynamic load stability | Observe supply rail during animation / scanning | No unacceptable droop or reset behavior | No controller resets or obvious display corruption under normal patterns |
 
 ### 10.3 ESP32 and firmware bring-up tests
 
 | ID | Test name | Method | Expected result | Pass criteria |
 |---|---|---|---|---|
-| TP-10 | ESP32 boot test | Power board and observe boot behavior | Controller starts successfully | Firmware starts reliably after repeated power cycles |
-| TP-11 | Programming interface test | Flash firmware from development environment | Firmware upload works | Successful flash and reboot confirmed |
-| TP-12 | Basic firmware heartbeat | Run minimal firmware with serial/log or test indication | Firmware main loop is alive | Stable repeated indication is observed |
-| TP-13 | Diagnostic mode entry | Trigger dedicated diagnostic/test mode | Diagnostic mode can be entered intentionally | Test mode activates on command and remains stable |
+| TP-09 | ESP32 boot test | Power board and observe boot behavior | Controller starts successfully | Firmware starts reliably after repeated power cycles |
+| TP-10 | Programming interface test | Flash firmware from development environment | Firmware upload works | Successful flash and reboot confirmed |
+| TP-11 | Basic firmware heartbeat | Run minimal firmware with serial/log or test indication | Firmware main loop is alive | Stable repeated indication is observed |
+| TP-12 | Diagnostic mode entry | Trigger dedicated diagnostic/test mode | Diagnostic mode can be entered intentionally | Test mode activates on command and remains stable |
 
 ### 10.4 LED driver and addressing tests
 
 | ID | Test name | Method | Expected result | Pass criteria |
 |---|---|---|---|---|
-| TP-14 | Single-layer activation test | Enable one layer at a time with simple pattern | Only intended layer activates | No unintended layers illuminate |
-| TP-15 | Single-column / line test | Drive selected LED lines in controlled pattern | Only intended lines respond | No cross-coupling beyond acceptable ghosting level |
-| TP-16 | Walking voxel test | Step one voxel through the full cube address space | Address mapping is correct | Every commanded voxel appears at intended physical location |
-| TP-17 | Full-layer pattern test | Show full-plane and checkerboard patterns | Driver stage handles dense patterns | Pattern appears correct and repeatable |
-| TP-18 | Ghosting observation | Display sparse and dense patterns and inspect unwanted light | Ghosting remains acceptable | No severe unintended illumination that breaks usability |
+| TP-13 | Single-layer activation test | Enable one layer at a time with simple pattern | Only intended layer activates | No unintended layers illuminate |
+| TP-14 | Single-column / line test | Drive selected LED lines in controlled pattern | Only intended lines respond | No cross-coupling beyond acceptable ghosting level |
+| TP-15 | Walking voxel test | Step one voxel through the full cube address space | Address mapping is correct | Every commanded voxel appears at intended physical location |
+| TP-16 | Full-layer pattern test | Show full-plane and checkerboard patterns | Driver stage handles dense patterns | Pattern appears correct and repeatable |
+| TP-17 | Ghosting observation | Display sparse and dense patterns and inspect unwanted light | Ghosting remains acceptable | No severe unintended illumination that breaks usability |
 
 ### 10.5 Integrated cube functional tests
 
 | ID | Test name | Method | Expected result | Pass criteria |
 |---|---|---|---|---|
-| TP-19 | Full cube scan test | Run full refresh across all layers | Entire cube refreshes correctly | All layers participate in display without missing sections |
-| TP-20 | Voxel mapping validation | Compare commanded coordinates with observed location | Logical-to-physical mapping is correct | Mapping is consistent across full cube |
-| TP-21 | Animation playback test | Run baseline animation set | Animations render correctly | Stored animations run without crash, freeze, or major visual corruption |
-| TP-22 | Mode switching test | Change between animation modes / states | System changes modes correctly | Requested mode changes are applied consistently |
-| TP-23 | Flicker evaluation | Observe display directly and through camera if useful | Refresh is visually stable | No obvious flicker during normal viewing conditions |
-| TP-24 | Brightness consistency check | Compare brightness across cube regions and layers | No major brightness imbalance | Variations stay acceptable for portfolio demonstration |
+| TP-18 | Full cube scan test | Run full refresh across all layers | Entire cube refreshes correctly | All layers participate in display without missing sections |
+| TP-19 | Voxel mapping validation | Compare commanded coordinates with observed location | Logical-to-physical mapping is correct | Mapping is consistent across full cube |
+| TP-20 | Animation playback test | Run baseline animation set | Animations render correctly | Stored animations run without crash, freeze, or major visual corruption |
+| TP-21 | Mode switching test | Change between animation modes / states | System changes modes correctly | Requested mode changes are applied consistently |
+| TP-22 | Flicker evaluation | Observe display directly and through camera if useful | Refresh is visually stable | No obvious flicker during normal viewing conditions |
+| TP-23 | Brightness consistency check | Compare brightness across cube regions and layers | No major brightness imbalance | Variations stay acceptable for portfolio demonstration |
 
 ### 10.6 Communication and control tests
 
 | ID | Test name | Method | Expected result | Pass criteria |
 |---|---|---|---|---|
-| TP-25 | BLE link test | Connect smartphone or BLE client to the ESP32 control interface | Link initializes correctly | Device connects reliably |
-| TP-26 | Command reception test | Send valid commands such as mode change or speed setting | Firmware receives and applies commands | Requested change appears correctly on cube |
-| TP-27 | Invalid command handling | Send malformed or unsupported command input | System remains stable | No crash, lockup, or unsafe behavior occurs |
-| TP-28 | Reconnect behavior | Disconnect and reconnect controller/client | System recovers correctly | Reconnection works without requiring full power cycle unless intentionally designed |
+| TP-24 | BLE link test | Connect smartphone or BLE client to the ESP32 control interface | Link initializes correctly | Device connects reliably |
+| TP-25 | Command reception test | Send valid commands such as mode change or speed setting | Firmware receives and applies commands | Requested change appears correctly on cube |
+| TP-26 | Invalid command handling | Send malformed or unsupported command input | System remains stable | No crash, lockup, or unsafe behavior occurs |
+| TP-27 | Reconnect behavior | Disconnect and reconnect controller/client | System recovers correctly | Reconnection works without requiring full power cycle unless intentionally designed |
 
 ### 10.7 Reliability and runtime tests
 
 | ID | Test name | Method | Expected result | Pass criteria |
 |---|---|---|---|---|
-| TP-29 | Extended runtime test | Run representative animation continuously for an extended period | Stable operation over time | No reset, freeze, overheating, or visible degradation during test window |
-| TP-30 | Repeated power-cycle test | Power cycle system multiple times | Startup remains consistent | System starts correctly on repeated cycles |
-| TP-31 | Thermal spot check | Check temperature of regulators, drivers, and critical areas | Temperatures remain reasonable | No part reaches obviously unsafe temperature in normal operation |
-| TP-32 | Max-normal-load visual test | Run dense / bright test pattern within intended normal usage | System remains stable | No supply collapse, reset, or severe artifacting |
+| TP-28 | Extended runtime test | Run representative animation continuously for an extended period | Stable operation over time | No reset, freeze, overheating, or visible degradation during test window |
+| TP-29 | Repeated power-cycle test | Power cycle system multiple times | Startup remains consistent | System starts correctly on repeated cycles |
+| TP-30 | Thermal spot check | Check temperature of regulators, drivers, and critical areas | Temperatures remain reasonable | No part reaches obviously unsafe temperature in normal operation |
+| TP-31 | Max-normal-load visual test | Run dense / bright test pattern within intended normal usage | System remains stable | No supply collapse, reset, or severe artifacting |
 
 ## 11. Requirement-to-Validation Traceability
 
 | Requirement ID | Summary | Validation path |
 |---|---|---|
-| FR-01 | 8×8×8 monochrome cube | TP-04, TP-16, TP-19, visual inspection |
+| FR-01 | 8×8×8 monochrome cube | TP-04, TP-15, TP-18, visual inspection |
 | FR-02 | One custom ESP32-based main PCB | TP-01, hardware inspection |
-| FR-03 | Dedicated driver stage | TP-01, TP-14, TP-15, TP-17 |
-| FR-04 | One active layer at a time | TP-14, TP-19 |
-| FR-05 | 5 V input and 3.3 V logic rail | TP-05, TP-06, TP-07 |
-| FR-06 | Internal flash only for revision-1 storage | firmware inspection, TP-21 |
-| FR-07 | Initialization, scan, mapping, animation, diagnostics | TP-10, TP-12, TP-13, TP-16, TP-21 |
-| FR-08 | BLE smartphone control | TP-25, TP-26, TP-28 |
-| FR-09 | Programming/debug interface | TP-11, TP-12 |
-| FR-10 | Voxel-addressable mapping | TP-16, TP-20 |
-| FR-11 | Bring-up independent of final BLE path | TP-05 through TP-13 |
+| FR-03 | Dedicated driver stage | TP-01, TP-13, TP-14, TP-16 |
+| FR-04 | One active layer at a time | TP-13, TP-18 |
+| FR-05 | 5 V input | TP-05, TP-06 |
+| FR-06 | Internal flash only for revision-1 storage | firmware inspection, TP-20 |
+| FR-07 | Initialization, scan, mapping, animation, diagnostics | TP-09, TP-11, TP-12, TP-15, TP-20 |
+| FR-08 | BLE smartphone control | TP-24, TP-25, TP-27 |
+| FR-09 | Programming/debug interface | TP-10, TP-11 |
+| FR-10 | Voxel-addressable mapping | TP-15, TP-19 |
+| FR-11 | Bring-up independent of final BLE path | TP-05 through TP-12 |
 | FR-12 | Validation evidence produced | test records stored in `docs/04_validation/` |
-| NFR-01 | 5 V / 3 A planning baseline | power-budget analysis, architecture/requirements inspection |
-| NFR-02 | Electrical stability during normal use | TP-09, TP-29, TP-32 |
-| NFR-03 | Visual stability / no obvious flicker | TP-23 |
-| NFR-04 | Safe operating margins over extreme brightness | design calculations, TP-31, engineering review |
+| NFR-01 | 5 V / 5 A planning baseline | power-budget analysis, architecture/requirements inspection |
+| NFR-02 | Electrical stability during normal use | TP-08, TP-28, TP-31 |
+| NFR-03 | Visual stability / no obvious flicker | TP-22 |
+| NFR-04 | Safe operating margins over extreme brightness | design calculations, TP-30, engineering review |
 | NFR-05 | Core electronics cost about €100 or less | BOM analysis |
 | NFR-06 | Scan path separated from higher-level logic | firmware architecture review |
 | NFR-07 | Every major requirement has a validation path | this traceability matrix |
