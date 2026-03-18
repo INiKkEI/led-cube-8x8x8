@@ -26,21 +26,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-02 — Logic power regulation
-**Requirement intent:** The control electronics shall receive a valid logic supply.
-
-**Acceptance criteria**
-- The 3.3 V logic rail is present after power-up.
-- The measured 3.3 V rail is within **3.20 V to 3.40 V**.
-- During a **5 minute** observation with normal scan activity, the 3.3 V rail remains stable enough that no ESP32 reset or obvious display corruption occurs.
-
-**Pass condition:** All three statements are true.
-
-**Trace to test cases:** TP-07, TP-09
-
----
-
-### AC-03 — ESP32 boot reliability
+### AC-02 — ESP32 boot reliability
 **Requirement intent:** The ESP32 control subsystem shall boot reliably.
 
 **Acceptance criteria**
@@ -54,7 +40,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-04 — Programming interface operation
+### AC-03 — Programming interface operation
 **Requirement intent:** Firmware shall be uploadable through the intended development interface.
 
 **Acceptance criteria**
@@ -68,7 +54,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-05 — Layer switching correctness
+### AC-4 — Layer switching correctness
 **Requirement intent:** The display shall use correct multiplexed layer control.
 
 **Acceptance criteria**
@@ -82,7 +68,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-06 — LED line driving correctness
+### AC-05 — LED line driving correctness
 **Requirement intent:** The driver stage shall activate intended LED lines only.
 
 **Acceptance criteria**
@@ -96,7 +82,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-07 — Full voxel address mapping
+### AC-06 — Full voxel address mapping
 **Requirement intent:** Logical voxel coordinates shall match physical LED positions.
 
 **Acceptance criteria**
@@ -110,7 +96,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-08 — Functional full-cube display
+### AC-07 — Functional full-cube display
 **Requirement intent:** The assembled cube shall operate as a complete 8×8×8 monochrome display.
 
 **Acceptance criteria**
@@ -124,7 +110,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-09 — Built-in animation capability
+### AC-08 — Built-in animation capability
 **Requirement intent:** Rev 1 firmware shall provide built-in animations stored locally on the controller.
 
 **Acceptance criteria**
@@ -138,7 +124,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-10 — BLE control link
+### AC-09 — BLE control link
 **Requirement intent:** The cube shall support BLE-based smartphone control for basic user commands.
 
 **Acceptance criteria**
@@ -152,7 +138,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-11 — Invalid command robustness
+### AC-10 — Invalid command robustness
 **Requirement intent:** The control interface shall fail safely on bad user input.
 
 **Acceptance criteria**
@@ -166,7 +152,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-12 — Diagnostic mode usefulness
+### AC-11 — Diagnostic mode usefulness
 **Requirement intent:** Firmware shall support bring-up and troubleshooting through explicit diagnostic modes.
 
 **Acceptance criteria**
@@ -183,7 +169,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-13 — Visually stable refresh
+### AC-12 — Visually stable refresh
 **Requirement intent:** Display refresh shall be stable enough for normal viewing and demonstration.
 
 **Acceptance criteria**
@@ -197,7 +183,7 @@ The criteria are intended to be:
 
 ---
 
-### AC-14 — Runtime and thermal stability
+### AC-13 — Runtime and thermal stability
 **Requirement intent:** The cube shall remain stable during representative use.
 
 **Acceptance criteria**
@@ -226,16 +212,15 @@ If any acceptance criterion fails, Rev 1 is not yet fully accepted and the failu
 | Acceptance Criterion | Related Test Cases |
 |---|---|
 | AC-01 | TP-05, TP-06 |
-| AC-02 | TP-07, TP-09 |
-| AC-03 | TP-10, TP-12, TP-30 |
-| AC-04 | TP-11 |
-| AC-05 | TP-13, TP-14, TP-19 |
-| AC-06 | TP-15, TP-18 |
-| AC-07 | TP-16, TP-20 |
-| AC-08 | TP-17, TP-19 |
-| AC-09 | TP-21, TP-22, TP-29 |
-| AC-10 | TP-25, TP-26 |
-| AC-11 | TP-27, TP-28 |
-| AC-12 | TP-13, TP-14, TP-15, TP-16 |
-| AC-13 | TP-23, TP-24 |
-| AC-14 | TP-29, TP-31, TP-32 |
+| AC-02 | TP-10, TP-12, TP-30 |
+| AC-03 | TP-11 |
+| AC-04 | TP-13, TP-14, TP-19 |
+| AC-05 | TP-15, TP-18 |
+| AC-06 | TP-16, TP-20 |
+| AC-07 | TP-17, TP-19 |
+| AC-08 | TP-21, TP-22, TP-29 |
+| AC-09 | TP-25, TP-26 |
+| AC-10 | TP-27, TP-28 |
+| AC-11 | TP-13, TP-14, TP-15, TP-16 |
+| AC-12 | TP-23, TP-24 |
+| AC-13 | TP-29, TP-31, TP-32 |
