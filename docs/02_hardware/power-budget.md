@@ -22,7 +22,6 @@ This estimate is based on the current revision-1 architecture:
 - **multiplexed layer scanning**
 - **one active layer at a time**
 - **5 V** main external input
-- local **3.3 V** regulation for ESP32 logic
 - dedicated driver stage between the ESP32 and cube
 - brightness controlled conservatively through timing, not aggressive LED overdrive
 
@@ -45,10 +44,6 @@ The major current consumers in revision 1 are:
    - BLE activity
    - firmware execution
    - small supporting logic
-
-4. **3.3 V regulation losses**
-   - depends on regulator type
-   - can become noticeable if a linear regulator is used
 
 ---
 
@@ -199,14 +194,12 @@ At the current 10 mA planning point:
 - heat will mainly appear in:
   - current-limiting resistors or current-setting elements
   - line/layer driver devices
-  - the 3.3 V regulator
   - to a much smaller extent, the ESP32 itself
 
 ### Expected thermal behavior
 
 - **No active cooling should be necessary** for revision 1 if the PCB layout is reasonable.
 - The board may become **noticeably warm** around driver devices and regulator areas during worst-case display patterns.
-- If a **linear 3.3 V regulator** is used, it should be checked carefully for dissipation and temperature rise.
 - Raising peak LED current later will directly increase both supply demand and thermal stress.
 
 ---
@@ -216,14 +209,13 @@ At the current 10 mA planning point:
 | Item | Estimated value |
 |---|---:|
 | Main input voltage | 5 V |
-| Logic rail | 3.3 V |
 | Max active LEDs at once | 64 |
 | Baseline peak current per active LED | 10 mA |
 | Estimated display current | 0.64 A |
 | Estimated total input current | ~0.94 A |
 | Rounded design target | 1.2 A continuous |
 | Estimated total input power | ~4.7 W |
-| Recommended external adapter baseline | 5 V / 5 A minimum |
+| Recommended external adapter baseline | 5 V / 5 A |
 
 ---
 
