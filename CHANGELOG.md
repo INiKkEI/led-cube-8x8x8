@@ -17,3 +17,9 @@ For small edits and daily work sessions, use Git commit history.
 - Aligned the core documentation with the ESP32-based LED Cube architecture and corrected cross-document mismatches.
 - Strengthened requirement quality by adding measurable acceptance criteria and planned validation paths.
 - Prepared the repository for the next phase of detailed hardware, firmware, and implementation planning.
+
+## 2026-03-20 — Electrical design calculations and schematic-preparation baseline
+- Reworked `docs/02_hardware/design-calculations.md` into a first-pass electrical design note that is usable during schematic capture.
+- Documented the main hardware calculations behind the cube, including LED current assumptions, resistor sizing, multiplexing current, resistor dissipation, and supply-side checks.
+- Clarified where exact electrical parts still need to be selected so schematic capture can move from assumptions to real component choices.
+- Reviewed the role and expected structure of the `hardware/` workspace in preparation for committing real Altium design source files.
