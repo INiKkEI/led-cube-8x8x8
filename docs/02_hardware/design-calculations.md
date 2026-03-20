@@ -71,23 +71,23 @@ Because the cube is scanned layer by layer:
 
 ### 4.1 Maximum simultaneously active LEDs
 
-\[
+$
 N_{active,max} = 8 \times 8 = 64
-\]
+$
 
 ### 4.2 Maximum layer current
 
-\[
+$
 I_{layer,max} = 64 \times 15\,mA = 960\,mA = 0.96\,A
-\]
+$
 
 So the selected **high-side layer switch for each layer must comfortably handle about 1 A peak**.
 
 ### 4.3 Average LED current per voxel at full-frame all-on
 
-\[
+$
 I_{LED,avg} = 15\,mA \times \frac{1}{8} = 1.875\,mA
-\]
+$
 
 This confirms the design is using moderate average LED stress even though the instantaneous active current is higher.
 
@@ -101,9 +101,9 @@ Current limiting is one resistor per line, so the resistor value must be chosen 
 
 For one lit LED in the active layer, the current path is:
 
-\[
+$
 5V \rightarrow P\text{-}MOSFET \rightarrow LED \rightarrow line\ resistor \rightarrow low\text{-}side\ sink
-\]
+$
 
 Use these first-pass voltage allowances:
 
@@ -115,25 +115,25 @@ Use these first-pass voltage allowances:
 
 ### 5.2 Ideal resistor value
 
-\[
+$
 R = \frac{5.0 - 3.2 - 0.1 - 0.1}{0.015} = 106.7\,\Omega
-\]
+$
 
 ### 5.3 Selected standard value
 
 Choose:
 
-\[
+$
 \boxed{R_{line} = 120\,\Omega}
-\]
+$
 
 This is the safer standard value because it keeps the design slightly conservative and gives margin for LED forward-voltage spread.
 
 ### 5.4 Expected LED current with 120 Ω
 
-\[
+$
 I_{LED} = \frac{5.0 - 3.2 - 0.1 - 0.1}{120} = 13.3\,mA
-\]
+$
 
 In practice, current will vary with the exact LED Vf and real driver voltage drops, but **120 Ω places the design in the intended ~13–15 mA peak range**.
 
@@ -141,21 +141,21 @@ In practice, current will vary with the exact LED Vf and real driver voltage dro
 
 Peak resistor dissipation when a line is on:
 
-\[
+$
 P_{R,peak} = I^2R = (0.0133)^2 \times 120 \approx 21\,mW
-\]
+$
 
 Using the full 15 mA design target:
 
-\[
+$
 P_{R,peak,worst} = (0.015)^2 \times 120 = 27\,mW
-\]
+$
 
 Average dissipation at 1/8 duty:
 
-\[
+$
 P_{R,avg} \approx \frac{27\,mW}{8} \approx 3.4\,mW
-\]
+$
 
 ### 5.6 Resistor selection result
 
@@ -176,9 +176,9 @@ Each active column line must sink current from exactly one LED in the active lay
 
 ### 6.1 Per-channel current requirement
 
-\[
+$
 I_{line,max} = 15\,mA
-\]
+$
 
 So each sink channel only needs to carry about **15 mA peak**.
 
@@ -186,9 +186,9 @@ So each sink channel only needs to carry about **15 mA peak**.
 
 If one 8-bit sink register is assigned to 8 lines, then worst case per package is:
 
-\[
+$
 I_{package,max} = 8 \times 15\,mA = 120\,mA
-\]
+$
 
 ### 6.3 Practical part choice
 
@@ -224,9 +224,9 @@ Each layer switch must source the full current of one active layer.
 
 From Section 4:
 
-\[
+$
 I_{layer,max} = 0.96\,A
-\]
+$
 
 A sensible design rule is to choose a switch with at least **2× practical margin**, so target **2 A class or better** even though the calculated peak is about 1 A.
 
@@ -250,9 +250,9 @@ Its ratings are comfortably above the calculated need for a 5 V, ~1 A layer swit
 
 Using a conservative on-resistance estimate of **60 mΩ** at strong gate drive:
 
-\[
+$
 P_{MOSFET,on} = I^2R = (0.96)^2 \times 0.06 \approx 55\,mW
-\]
+$
 
 This is low enough that no heatsink or special thermal hardware is expected to be needed in revision 1, assuming reasonable PCB copper.
 
@@ -274,9 +274,9 @@ If the MOSFET source sits at 5 V:
 
 - GPIO high at 3.3 V gives
 
-\[
+$
 V_{GS} = 3.3 - 5.0 = -1.7\,V
-\]
+$
 
 That is not a reliable OFF state for a high-side P-MOSFET.
 
@@ -310,15 +310,15 @@ The transistor does not carry the LED layer current. It only drives the MOSFET g
 
 Choose a base resistor around:
 
-\[
+$
 R_B = 4.7\,k\Omega
-\]
+$
 
 Then base current from a 3.3 V GPIO is approximately:
 
-\[
+$
 I_B = \frac{3.3 - 0.7}{4.7k} \approx 0.55\,mA
-\]
+$
 
 That is more than enough for a small transistor that only needs to discharge a MOSFET gate and overcome the gate pull-up current.
 
@@ -326,17 +326,17 @@ That is more than enough for a small transistor that only needs to discharge a M
 
 Choose:
 
-\[
+$
 R_{PU} = 10\,k\Omega
-\]
+$
 
 This keeps the MOSFET OFF by default at reset or during ESP32 boot.
 
 Steady pull-up current when the NPN is ON:
 
-\[
+$
 I_{PU} = \frac{5V}{10k\Omega} = 0.5\,mA
-\]
+$
 
 This is safely small.
 
@@ -344,9 +344,9 @@ This is safely small.
 
 Choose:
 
-\[
+$
 R_G = 100\,\Omega
-\]
+$
 
 This is not for DC biasing. It is simply a good practice part to:
 
@@ -378,27 +378,27 @@ Using the more concrete 120 Ω resistor selection, a realistic first estimate is
 
 ### 10.1 Display current
 
-\[
+$
 I_{display,max} = 64 \times 13.3\,mA \approx 0.85\,A
-\]
+$
 
 ### 10.2 Display power from 5 V rail
 
-\[
+$
 P_{display,max} = 5V \times 0.85A \approx 4.25W
-\]
+$
 
 ### 10.3 Upper-bound design case
 
 If the actual LED current after part tolerances is closer to the original 15 mA design target:
 
-\[
+$
 I_{display,max,upper} = 64 \times 15\,mA = 0.96\,A
-\]
+$
 
-\[
+$
 P_{display,max,upper} = 5V \times 0.96A = 4.8W
-\]
+$
 
 So the display section should be designed for roughly **0.85–0.96 A peak layer current**.
 
@@ -412,9 +412,9 @@ The display load changes quickly as layers switch, so the schematic should not r
 
 Use the capacitor sizing relation:
 
-\[
+$
 C = \frac{I \cdot \Delta t}{\Delta V}
-\]
+$
 
 Take a first-pass transient target:
 
@@ -424,9 +424,9 @@ Take a first-pass transient target:
 
 Then:
 
-\[
+$
 C = \frac{0.96 \times 25\,\mu s}{0.2} = 120\,\mu F
-\]
+$
 
 So **100 µF is the minimum useful local bulk value**, and **220 µF gives better margin**.
 
