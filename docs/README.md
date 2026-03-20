@@ -16,7 +16,7 @@ This folder contains the engineering documentation for the LED Cube project.
 To reduce duplication and drift:
 
 - locked top-level decisions belong in `00_overview/architecture-decisions.md`
-- mandatory revision-1 requirements belong in `00_overview/requirements-specification.md`
+- mandatory revision-1 requirements belong in `00_overview/requirements-specification-rev1.md`
 - validation method and test coverage belong in `04_validation/test-plan.md`
 - detailed implementation notes belong in the matching hardware or firmware section
 - portfolio-facing summaries belong in `05_portfolio/`
