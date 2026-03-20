@@ -48,7 +48,7 @@ docs/
 │   ├── architecture-decisions.md
 │   ├── hardware-firmware-boundary.md
 │   ├── project-summary.md
-│   ├── requirements-specification.md
+│   ├── requirements-specification-rev1.md
 │   └── system-architecture.md
 ├── 01_project-management/
 │   ├── build-log.md
@@ -85,7 +85,7 @@ README.md     Public landing page
 Use the repository in this order:
 
 1. `docs/00_overview/architecture-decisions.md` for the locked technical baseline
-2. `docs/00_overview/requirements-specification.md` for what revision 1 must satisfy
+2. `docs/00_overview/requirements-specification-rev1.md` for what revision 1 must satisfy
 3. `docs/00_overview/system-architecture.md` for subsystem structure and interfaces
 4. `docs/04_validation/test-plan.md` for how the requirements will be verified
 5. topic-specific hardware, firmware, and portfolio folders for detailed follow-on work
