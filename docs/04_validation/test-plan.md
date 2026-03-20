@@ -40,7 +40,7 @@ This plan should be used together with:
 
 - `README.md`
 - `docs/00_overview/architecture-decisions.md`
-- `docs/00_overview/requirements-specification.md`
+- `docs/00_overview/requirements-specification-rev1.md`
 - `docs/00_overview/system-architecture.md`
 - `docs/00_overview/hardware-firmware-boundary.md`
 - hardware schematic, PCB, and manufacturing outputs in `hardware/`
