@@ -71,9 +71,7 @@ Because the cube is scanned layer by layer:
 
 ### 4.1 Maximum simultaneously active LEDs
 
-$
-N_{active,max} = 8 \times 8 = 64
-$
+$N_{active,max} = 8 \times 8 = 64$
 
 ### 4.2 Maximum layer current
 
